@@ -1,0 +1,1903 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{preamble} % everything is loaded in there, basically.
+%\graphicspath{{../figures/}} % set filepath for figures
+\usepackage{svg}
+\usepackage{caption,subcaption}
+\usepackage{morefloats}
+
+%---------------------------------------------------------------------------------------------------------------------------
+%% TODO statements
+%---------------------------------------------------------------------------------------------------------------------------
+\setlength{\marginparwidth}{2.5cm}
+\usepackage[colorinlistoftodos]{todonotes}
+%\usepackage[disable]{todonotes} % This will disable viewing Todos
+\setuptodonotes{size=\scriptsize,backgroundcolor=red!15!white} 
+
+\newcommandx{\colin}[2][1=]{\todo[linecolor=green,backgroundcolor=green!25,bordercolor=green,#1]{\tiny Colin: #2}}
+%---------------------------------------------------------------------------------------------------------------------------
+
+
+%---------------------------------------------------------------------------------------------------------------------------
+%% Document Info
+%---------------------------------------------------------------------------------------------------------------------------
+\title{Cohomology in AC/DC RLC Circuits and Measurement}
+
+\author{Colin Roberts}
+\affil{autoparallel.xyz}
+
+%---------------------------------------------------------------------------------------------------------------------------
+
+
+
+%---------------------------------------------------------------------------------------------------------------------------
+%% Document Start
+%---------------------------------------------------------------------------------------------------------------------------
+\begin{document}
+
+\maketitle
+\begin{abstract}
+The equations of electromagnetism can be understood understood almost entirely from de Rham cohomology. 
+We can do computations such as the cap and cup products (maybe other products). 
+This includes the long exact sequences of relative (co)homology, Poincar\'e--Lefschetz duality, Alexander duality, and the Kunneth theorem. 
+We will find that all of these theorems are grounded deeply in physics and they may be insightful for engineers and physicists. 
+We also provide a new insights on Ohmic conductors in terms of more general functions called spinors. 
+In essence, Ohmic conductors couple the scalar potential and magnetic bivector field into a monogenic spinor.
+We can define AC/DC RLC circuits in a topological manner.
+\end{abstract}
+
+
+\newpage
+% %---------------------------------------------------------------------------------------------------------------------------
+% \section{Introduction}
+% %---------------------------------------------------------------------------------------------------------------------------
+
+Electromagnetism is fundamentally topological \cite{gross_electromagnetic_2004}. 
+This has been understood nearly since inception. 
+Maxwell, for example, was aware of the topological nature of the electromagnetic fields and referred to a measure of ``cyclosis" which is akin to the Betti numbers of a manifold. 
+He knew that the topology of the domain was intimately related to the existence of certain types of functions.
+ For example, \cite[theorem 1]{maxwell_treatise_1873} implies that the vanishing of the first homology class $H_1(M)$ of the body $M$ implies the existence of potentials. 
+ It was not long after that de Rham \colin{cite}, Poincar\'e, and Lefschetz related the homology of a manifold to the cohomology of the forms supported on the manifold.
+
+It would be wonderful to make this theory more approachable and intuitive. 
+This means collecting all the disparate information in one place and providing the practicioner with real computational tools. 
+For example, we can provide new ways for more theoretical computations like the cap product and extend this to Poincar\'e--Lefschetz duality. 
+Similarly, from a unified perspective we, much of the pedogogy can be simplified. 
+Certain intuitions engineers may have about electrical components can be extracted purely using topology.
+
+
+When working with the homology and cohomology of manifolds there one can choose to work with the notions of simplicial, singular, and de Rham theories. 
+They all end up equivalent so long as the underlying ring is a field. 
+Each just with their own interpretation. 
+Working with simplicial theories leads you to a realm of discrete exterior calculus \colin{cite marsden and also krane}. 
+This is immensely powerful since all the features are easily computed. 
+We will not focus on the simplicial theory in this paper, but will mention that \cite{hatcher_algebraic_2002} proves their equivalence. 
+Singular theories lay the foundation of the theoretical tools and are the bridge for equivalence between the three choices. 
+Finally, the de Rham theories are deeply analytical. 
+This concerns the existence and uniqueness of fields that satisfy partial differential equations and boundary constraints.
+
+The singular theory builds up the topological theory of spaces by continuous maps of chains. 
+We can think of the image of these chains $C$ as submanifolds of a larger manifold $M$. 
+Each chain is parameterized by their tangent or, equivalently, normal spaces inside of the tangent space to $M$. 
+Given a chain $C_k$ of dimension $k$, we can measure the amount of a $k$-vector field $A^k$ lies tangent to $C_k$. 
+This pairing amounts to integration. 
+
+The de Rham theory uses exterior calculus and is the link to partial differential equations. 
+Most commonly studied is the de Rham cohomology of differential forms, but there is also the lesser known de Rham homology of currents. 
+Differential forms are a typical way to generalize the vector calculus of Heaviside and Helmholtz \colin{cite} to manifolds of arbitrary dimension. 
+The measurements of differential forms are what de Rham referred to as currents. 
+
+The most important theorem with differential forms is Stokes' theorem. 
+It explains the the duality between taking the derivative of a form and the boundary of a chain. 
+It is seen in many guises including the fundamental theorem of calculus, the divergence theorem, and Stokes' theorem for curves and surfaces, but it is a far more general fact. 
+It also gives rise to the ever important integration-by-parts formula which we refer to a Green's formula. 
+Stokes' theorem is the essential link to boundary value problems.
+
+When studying boundary value problems, another tool is Hodge theory. 
+This arises for Riemannian manifolds, that is, manifolds with a distance metric. 
+This is the most analytical regime we consider. 
+Here, spaces of forms are decomposed by their analytical properties. 
+Remarkably, these properties align with the topological properties of the space the forms are defined on. 
+That association is only possible due to both Hodge and de Rham. 
+More or less, the pairing by integration mentioned previously is shown to be nondegenerate. 
+This provides us an definite inner product of forms that allows for a weakening of the partial differential equations. 
+This relies firmly on the manifold having a true distance measure.
+
+Not all manifolds are lucky enough to be provided with a distance metric, but have something close. 
+The predominant example are spacetime manifolds. 
+In this case, there are leaves of the manifold with a spatial structure, but the manifold as a whole does not carry such a metric. 
+Hence, we lose Hodge theory on the entirety of the manifold, but retain it on the leaves. 
+Fortunately, there are tools to use to mitigate this issue as best as possible.
+
+It was Grassmann who first extended vector spaces to their exterior algebra\colin{cite}. 
+Not long after, Clifford added a new relation to Grassman's exterior algebra in the form of an interior multiplication. 
+This small change allows for a much richer geometric algebra. 
+For us, it is fortunate since it encapsulates exterior differential forms and more. 
+For example, both the complex and quaternion algebras are sub-Clifford algebras in an intuitive way. 
+They are actually sums of multiple graded elements.
+
+% talk about relative stuff and why poincare duality should be true via flux and work
+
+%---------------------------------------------------------------------------------------------------------------------------
+\section{Clifford Algebras}\label{sec:clifford_algebras}
+%---------------------------------------------------------------------------------------------------------------------------
+The mathematics of Clifford algebras can be a bit daunting if approached from too technical of a perspective. Books such as the more modern \emph{Geometric Algebra for Physicists} by Doran and Lasenby \cite{doran_geometric_2003} is an amazing place to learn more at an intuitive level. The text \emph{From Clifford Algebras to Geometric Calculus} by Hestenes and Sobczyk \cite{hestenes_clifford_1984}\colin{I honestly don't like this text and I can't really stand to read anything from Hestenes at this point. I just think it is only fair to cite him since he did bring a lot of this to the modern day. I'm conflicted.} is another, perhaps more in depth, text. We will provide the technical framework and appeal to our own examples for more intuition, but the reader should strongly consider the sources cited here if they feel our material lacks reason.
+
+The fundamental idea of Clifford algebras is to generate the least restrictive algebra associated to a vector space with a symmetric bilinear or, equivalently, quadratic form. The least freest algebra associated to any vector space is the tensor algebra. Objects in the tensor algebra are tensors which can be added and multiplied with the tensor product $\otimes$. This symbol $\otimes$ can be thought of as an algebraic way of combining vectors into words.
+
+Given a vector space with a symmetric bilinear form $g$, we can look for the freest algebra that includes a meaningful contribution from the form. In the right context, the form induces geometry. Take the case where $g$ is a definite inner product. Then the vector space automatically gains a norm and a distance measure. This is the nicest case. The bilinear form may start to degenerate depending on your space. For example, it could be that one vector $\blade{c}$ is norm zero, that is $g(\blade{c},\blade{c})=0$. Even worse, there could be a vector $\blade{v}$ such that for any other vector $\blade{w}$ we have $g(\blade{v},\blade{w})=0$. 
+
+At any rate, a Clifford algebra will retain all of this information that $g$ provides us about our vector space in the form of a product between vectors. Hence, product between elements of a Clifford algebra encapsulate geometric relationships between the elements. These geometric relationships are meaningful. After all, we have the quote ``Physics is geometry" by Misner and Wheeler. Wheeler also went on to say that ``Charge is topology" which we consider later on.
+
+%---------------------------------------------------------------------------------------------------------------------------
+\subsection{Construction of a Clifford Algebra}
+%---------------------------------------------------------------------------------------------------------------------------
+
+To construct any Clifford algebra, take an $n$-dimensional vector space $V$ over a field $\mathbb{F}$ with a symmetric bilinear form $g$. By the polarization identity, given a $g$ there is a unique corresponding quadratic form $g$. For more information on vector spaces with quadratic or bilinear forms, please see \cite{roman_metric_2008}. The tensor algebra is $\bigoplus_{n \in \mathbb{N}} V^{\otimes^n}$ and the Clifford algebra $\clifford(V,Q)$ is given by the quotient
+\begin{equation}
+\label{eq:ideal_quotient}
+\clifford(V,g) \coloneqq \bigoplus_{n \in \mathbb{N}} V^{\otimes^n} ~ / ~ \langle \blade{v} \otimes \blade{v} - g(\blade{v},\blade{v}) \rangle.
+\end{equation}
+
+\begin{remark}
+For sake of clarity, we will think of $\clifford(V,g)=\clifford(V,Q)$. In most literature, Clifford algebras are defined using quadratic forms. 
+\end{remark}
+
+The multiplication in $\clifford(V,g)$ is induced from the addition and multiplication from the tensor algebra via the map $\bigoplus_{n\in \mathbb{N}} V^{\otimes n} \to C\ell(V,g)$. The addition is clear, but the multiplication take a bit more care since we can use the ideal to reduce. First, we can can see that at least some portion of the multiplication of vectors can be reduced to scalars since taking $\blade{v}\in V$ and mapping to the representative yields
+\begin{equation}
+    \blade{v}\otimes \blade{v} \mapsto \blade{v}^2 = g(\blade{v},\blade{v}).
+\end{equation}
+The map is linear in the sense that for another $\blade{w}\in V$ we have
+\begin{equation}
+    \blade{v} \otimes (\blade{v}+\blade{w}) \mapsto g(\blade{v},\blade{v}) + \blade{v}\blade{w}.
+\end{equation}
+We see that we must refine the product $\blade{v}\blade{w}$ further. Extend $\blade{v}$ to a basis $\blade{v}_2,\dots \blade{v}_n$ then $\blade{w}=\lambda \blade{v}+\blade{v'}$ for $\lambda \in \mathbb{F}$ and where $\blade{v'} \in \mathrm{Span}(\blade{v}_2,\dots,\blade{v}_n)$. Then
+\begin{equation}
+    \blade{w}\blade{v}=\blade{v}^2 + \blade{v'}\blade{v}.
+\end{equation}
+We can see the term $\blade{v'}\blade{v}$ is capturing the exterior multiplication of Grassmann and we can write $\blade{v'}\blade{v} = \blade{v'}\wedge \blade{v}$. In particular, the wedge was defined by Grassmann by way of
+\begin{equation}
+    \blade{v} \wedge \blade{w} = \lambda \blade{v}\wedge \blade{v} + \blade{v}\wedge \blade{v'} = \blade{v}\wedge \blade{v'}.
+\end{equation}
+It follows that the exterior algebra $\bigwedge (V)$ includes into $\clifford(V,g)$ for any $g$. In fact, the trivial Clifford algebra is the exterior algebra $\bigwedge(V) = \clifford(V,0)$. We can see both these facts by the noting that the ideal generated $\blade{v}\otimes \blade{v}=0$ appears no matter what we choose for $g$. The above work also goes to show that the $\wedge$ does not actually capture any geometry induced by $g$, just linear independence inside $V$. This motivates calling the pair $(V,g)$ a \emph{geometric space} and we can think of $\clifford$ as a functor from geometric spaces into algebras.
+
+\subsection{Geometric Algebras}
+We want to remove degenerate vectors from the algebra, that is vectors $\blade{v}$ such that for any other $\blade{w}$ we have $g(\blade{v},\blade{w})=0$. We do this by choosing $g$ to be completely nonsingular. 
+\begin{definition}
+Let $(V,g)$ be a geometric space and let $g$ be nonsingular. Then the associated Clifford algebra is a \emph{geometric algebra} and we denote it by $\G \coloneqq \clifford(V,Q)$.
+\end{definition}
+Once again, the chapter \cite{roman_metric_2008} by Roman would be useful. Using the vector space basis $\blade{e}_i$, we can determine the coefficients of the matrix for the bilinear form in this basis by
+\begin{equation}
+g_{ij}=g(\blade{e}_i,\blade{e}_j).
+\end{equation}
+Let us quickly remark that if we were considering a Clifford algebra that was not a geometric algebra, then the matrix $g_{ij}$ would be singular. We will carry on the rest of this paper working solely with geometric algebras for this reason, so the reader can assume that we take $g$ that are symmetric and full rank. For notational simplicity, we also define the \emph{interior product}
+\begin{equation}
+\label{eq:interior_product}
+    \blade{e}_i \cdot \blade{e}_j \coloneqq g(\blade{e}_i,\blade{e}_j).
+\end{equation}
+
+When we work with a geometric algebra $\G$, we extend the exterior algebra $\bigwedge(V)$ to include the interior product. More generally, given  $\blade{v},\blade{w}\in V$ their \emph{geometric product} in $\G$ is
+\begin{equation}
+\label{eq:product_of_vectors}
+    \blade{v}\blade{w}= \underbrace{\blade{v}\cdot \blade{w}}_{\textrm{grade-0}} +\underbrace{\blade{v}\wedge \blade{w}}_{\textrm{grade-2}}.
+\end{equation}
+We see that products of vectors inside $\G$ return new types of elements we have yet to see. We have built the grade-0 objects called \emph{scalars} by $\blade{v}\cdot \blade{w}$ and we have built grade-2 objects called \emph{bivectors} from $\blade{v}\wedge \blade{w}$. The bivector $\blade{v}\wedge \blade{w}$ is slightly more special than just being a bivector, it is called a \emph{2-blade} since it is the exterior product of two vectors. Some may refer to this as a \emph{simple} or \emph{decomposable} bivector. This terminology appears more often in the realm of tensors where we would find that the 2-blade is a rank-1 tensor.
+
+We can string together multiple products of vectors to build objects of higher grade. Take a collection of vectors $\blade{v}_1,\dots,\blade{v}_k \in V$, then their geometric product in $\G$ is
+\begin{equation}
+    A = \blade{v}_1 \blade{v}_2 \cdots \blade{v}_k
+\end{equation}
+and we refer to $A$ as a \emph{versor}. Versors are special objects that have wonderful geometric properties. Without diving into too much detail, versors in a geometric algebra form a group called the \emph{Clifford group}. The Clifford group can act on the vector space by conjugation to reflect, rotate, and dilate the space. They are essentially conformal transformations of the space. If we further suppose that the vectors $\blade{v}_i$ are independent, then the versor $A$ contains an element of the form
+\begin{equation}
+    \blade{A_k} = \blade{v}_1 \wedge \cdots \wedge \blade{v}_k
+\end{equation}
+which we call a \emph{$k$-blade}. Again, these are the simplest types of objects. 
+
+The most general elements of $\G$ are \emph{multivectors}. Multivectors consist of sums of $k$-blades over all possible $k$. In particular, $0\leq k \leq n$ and, as a vector space, $\G$ is of dimension $2^n$ like the exterior algebra. A \emph{$k$-vector} is a linear combination of $k$-blades and we denote this subspace of grade-$k$ elements by $\G^k$. Therefore, we have the direct sum decomposition
+\begin{equation}
+    \label{eq:grade_decomposition}
+    \G= \bigoplus_{k=0}^n \G^k.
+\end{equation}
+Some graded elements have special names. We say grade-0 objects are \emph{scalars}, grade-1 are \emph{vectors}, grade-2 are \emph{bivectors}, and grade-$n$ objects are \emph{pseudoscalars}. Typically, objects of grade-$(n-k)$ receive the prefix ``pseudo'', for example, we have pseudoscalars of grade-$(n-0)$ and \emph{pseudovectors} of grade-$(n-1)$. Given the direct sum decomposition in \cref{eq:grade_decomposition}, a multivector $A\in \G$ is given by
+\begin{equation}
+    \label{eq:grade_decomp_of_multivector}
+A = \sum_{k=0}^n A_k
+\end{equation}
+where $A_k \in \G^k$. Multivectors also split into even and odd grades. The even graded elements form their own subalgebra which we write as $\G^+$. Elements $A_+ \in \G^+$ are referred to as \emph{spinors}. It is worth noting that a more general definition of spinors may appear (e.g., \colin{cite calderbank}, but this definition suffices for us.
+
+Given a $k$-vector $A_k$ and an $\ell$-vector $B_\ell$, the product is
+\begin{equation}
+\label{eq:general_clifford_multiplication}
+A_k B_\ell = \proj{|k-\ell|}{A_k B_\ell} + \proj{|k-\ell|+2}{A_k B_\ell} + \cdots + \proj{k+\ell}{A_k B_\ell},
+\end{equation}
+where the brackets $\proj{k}{-} \colon \G \to \G^k$ denote projection into the grade-$k$ subspace by
+\begin{equation}
+\proj{k}{A}=A_k
+\end{equation}
+when $A$ is given by \cref{eq:grade_decomp_of_multivector}. We define the \emph{(left) contraction} $A_k \contract B_\ell \coloneqq \proj{\ell-k}{A_k B_\ell}$. In general, the lowest grade term of $A_kB_\ell$ is the interior product $A_k \cdot B_\ell = \proj{|k-\ell|}{A_kB_\ell}$ and the exterior product $\wedge$ is the highest grade term of the product so that $A_k \wedge B_\ell = \proj{k+\ell}{A_k B_\ell}$. For a vector $\blade{v}$ we have $\blade{v}\cdot A = \blade{v}\contract A$ so many equations can be written with either $\cdot$ or $\contract$. Most will be written with $\contract$ as it is algebraically and geometrically more convenient. For notational simplicity, we also remove the subscript when projecting into the scalar subspace, $\proj{}{-}=\proj{0}{-}$, but this should not be confused with the notation for the ideal generated by a relation used only in \cref{eq:ideal_quotient}.
+
+
+\subsection{Bases for $\G$}
+The \emph{reciprocal basis vectors $\blade{e}^i$} are those that satisfy $\blade{e}^i \cdot \blade{e}_j = \delta^i_j$. Reciprocal basis elements allow us to use the Riesz representation in order to avoid extraneous use of dual space elements since we are able to capture this functionality through the interior product. For sake of clarity, $\blade{e}^i \cdot \blade{e}^j = g^{ij}$ is the matrix inverse to $g_{ij}$ and $\blade{e}^i = g^{ij} \blade{e}_j$ are just the ``raised up'' indices. 
+
+A basis $\blade{e}_i$ of $V$ induces a basis $k$-blade basis each $\G^k$. Let $\mathcal{I}=\{i_1,\dots,i_k\}$ be a list of increasing indices $i_1 < \cdots < i_k$ and define the \emph{basis blade}
+\begin{equation}
+\label{eq:basis_blades}
+\blade{E}_\mathcal{I} \coloneqq \blade{e}_{i_1}\wedge \cdots \wedge \blade{e}_{i_k}.
+\end{equation}
+For a basis blade $\blade{E}_\mathcal{I}$ we get a reciprocal blade is $\blade{E}^\mathcal{I}$ and it satisfies the equation $\blade{E}^\mathcal{I} \cdot \blade{E}_\mathcal{J}= \delta^\mathcal{I}_\mathcal{J}$ where $\delta^\mathcal{I}_\mathcal{J}=1$ only when the sets of indices $\mathcal{I}$ and $\mathcal{J}$ are identical. This of course holds true regardless of the size of the sets $\mathcal{I}$ and $\mathcal{J}$.
+
+Geometric algebras have a bilinear product $\G \times \G \to \R$ called the \emph{multivector inner product} which is given by
+\begin{equation}
+(A,B) \coloneqq \proj{}{A^\dagger B}.
+\end{equation}
+This equation is given in terms of the \emph{reverse operator} $\dagger$ which for $\lambda \in \R$ satisfies
+\begin{equation}
+(A+B)^\dagger=A^\dagger + B^\dagger, \quad (\lambda A)^\dagger = \lambda^\dagger A^\dagger = \lambda A^\dagger, \quad A^{\dagger \dagger}=A, \quad (AB)^\dagger = B^\dagger A^\dagger,
+\end{equation}
+and on a versor we have
+\begin{equation}
+    (\blade{v}_1\blade{v}_2 \cdots \blade{v}_k)^\dagger \coloneqq \blade{v}_k \cdots \blade{v}_2 \blade{v}_1.
+\end{equation}
+It is also true that
+\begin{equation}
+    A_k^\dagger = (-1)^{\frac{k(k-1)}{2}}A_k.
+\end{equation}
+Moreover, in $\G_{p,q}$
+\begin{equation}
+    \pseudoscalar \pseudoscalar^\dagger = (-1)^p.
+\end{equation}
+
+Note that $\dagger$ acts as the adjoint in the product $(-,-)$ which follows from the cyclic property of the scalar grade projection \cite[eq. (138)]{chisolm_geometric_2012}. To see this, we take another multivector $C$ and note
+\begin{align}
+(CA,B) = \proj{}{(CA)^\dagger B} = \proj{}{ A^\dagger C^\dagger B } = (A,C^\dagger B),
+\end{align}
+We define a semi-norm $|-|^2\coloneqq (-,-)$ called the \emph{multivector norm}. If $|A|=\pm 1$ we say that $A$ is \emph{unit} and if $|A|=0$ we say that $A$ is \emph{null}.
+
+\begin{remark}
+We mentioned versors form the Clifford group. It is also true that the unit versors define the \emph{spin group} $\mathrm{Spin}(V)$. The algebra of bivectors in $\G$ with the commutator $[-,-]$ (often written as $\times$ as well) is the Lie algebra $\mathfrak{spin}(V)$.
+\end{remark}
+
+It is worth saying that for a multivector field written in terms of basis blades $f=\sum_{\mathcal{I}} f_\mathcal{I} \blade{E}_\mathcal{I}$ that
+\begin{equation}
+\label{eq:inner_product_with_basis}
+f_\mathcal{I} = (f, \blade{E}^\mathcal{I}),
+\end{equation}
+so long as the inner product is definite (e.g., the Euclidean inner product). We also have that
+\begin{equation}
+\blade{E}^\mathcal{I} = (\blade{e}^{i_1} \wedge \cdots \wedge \blade{e}^{i_k})^\dagger.
+\end{equation}
+Really, the multivector inner product is the natural inner product on $\G$ when we think of $\G$ as a $2^n$-dimensional vector space. We can always choose an orthormal basis for $\G$ and in fact, it is easily constructed by extending and orthonormal basis for $V$.
+
+There exists a vector basis for $V$ where $p$ vectors square to $-1$ and $q$ vectors square to $+1$ and $p+q=n$. The corresponding geometric algebra is often written as $\G_{p,q}$. We refer to vectors whose square is negative as \emph{temporal} and vectors whose square is positive as \emph{spatial}. For $\G_{0,n}$, the multivector inner product and multivector norm are both positive definite. It is important to note that if $\blade{e}_i$ is temporal, the reciprocal $\blade{e}^i$ still satisfies $\blade{e}^i \cdot \blade{e}_i=1$. This extends to the basis blades as well.
+
+If we are given an orthogonal basis of unit vectors $\blade{e}_i$ in $V$, then the set of basis blades $\blade{E}_\mathcal{I}$ are also orthogonal and unit versors in $\G$ since
+\begin{equation}
+\blade{E}_\mathcal{I} = \blade{e}_{i_1}\wedge \cdots \wedge \blade{e}_{i_k} = \blade{e}_{i_1} \blade{e}_{i_2} \cdots \blade{e}_{i_k}.
+\end{equation}
+Their products become much clearer to compute. We have
+\begin{equation}
+\blade{E}_\mathcal{I} \blade{E}_\mathcal{J} =  \pm \blade{E}_{\mathcal{I}\triangle \mathcal{J}},
+\end{equation}
+where $\triangle$ is the symmetric difference of the sets $\mathcal{I}$ and $\mathcal{J}$ and the $\pm$ is used solely due to the fact that vectors $\blade{e}_i$ comprising the versors $\blade{E}_\mathcal{I}$ may need to be swapped and
+\begin{equation}
+-\blade{E}_\mathcal{I} = \blade{e}_{i_1} \blade{e}_{i_2} \cdots \blade{e}_{i_{j+1}} \blade{e}_{i_j}\cdots \blade{e}_{i_k}.
+\end{equation}
+For a concrete example, take $\blade{E}_{123}=\blade{e}_1\blade{e}_2\blade{e}_3$ and $\blade{E}_{124}$ both in $\G_{0,n}$, then
+\begin{equation}
+\blade{E}_{123}\blade{E}_{124}= \blade{e}_1\blade{e}_2\blade{e}_3\blade{e}_1\blade{e}_2\blade{e}_4=\blade{e}_1\blade{e}_2\blade{e}_1\blade{e}_2\blade{e}_3\blade{e}_4 = -\blade{e}_1\blade{e}_2\blade{e}_2\blade{e}_1\blade{e}_3\blade{e}_4 = -\blade{e}_1\blade{e}_1\blade{e}_3\blade{e}_4 = -\blade{E}_{34}.
+\end{equation}
+Using an orthogonal unit vector basis shows how nicely versors act algebraically. Multiplication is just reduction of words in the characters $\blade{e}_i$ subject to the relations $\blade{e}_i^2=\pm 1$ and $\blade{e}_i\blade{e}_j=-\blade{e}_j\blade{e}_i$.
+
+\subsection{Duality and Subspaces}
+
+Geometric algebras also have a isomorphism $\perp \colon \G^k \to \G^{n-k}$. One can think of this isomorphism as the extension of the orthogonal direct sum of subspaces. It is the principal notion of duality in $\G$. Let us see the construction.
+
+Perhaps the most useful concept of Clifford algebras is the ability to work algebraically with subspaces and not just vectors. Let us focus a bit on versors and more on blades. Given a list of vectors $\blade{v}_1,\dots,\blade{v}_k$, the versor $A=\blade{v}_1\blade{v}_2\cdots \blade{v}_k$ has a maximal grade element with grade between 0 and $k$. In the same vein, we have that $\mathrm{Span}(\blade{v}_1,\blade{v}_2,\dots,\blade{v}_k)$ is somewhere between a 0- and $k$- dimensional subspace. Suppose further that the list of vectors is linearly independent, then we have the maximal grade element as the blade $\blade{A_k}=\blade{v}_1\wedge \blade{v}_2\wedge \cdots \wedge \blade{v}_k$ and $\mathrm{Span}(\blade{v}_1,\blade{v}_2,\dots,\blade{v}_k)$ is $k$-dimensional. This was the intent of Grassmann after all. The exterior product allows us to build up subspaces.
+
+To this end, we can identify subspaces with blades directly. In particular, given a subspace $U \subset V$, then there exists a unit blade $\blade{U}$ that corresponds to this subspace. Hence, there is a unique $k$-blade for every point in the Grassmannian of $k$-planes $\mathrm{Gr}(k,n)$.
+
+Given a $k$-dimensional subspace $U\subset V$ of a nonsingular geometric space, we can put $V=U \oplus U^\perp$ where $U^\perp$ is the orthogonal complement to $U$. Note that $U^\perp$ is $n-k$-dimensional. If we take the corresponding $k$-blade $\blade{U_k}$, there exists a unique $\blade{U_k}^\perp$ so that
+\begin{equation}
+    \blade{U_k}\wedge \blade{U_k}^\perp = \proj{n}{\blade{U_k}\wedge \blade{U_k}^\perp}
+\end{equation}
+and moreover $|\blade{U_k}\wedge \blade{U_k}^\perp|=1$. 
+
+This $n$-blade we constructed deserves special recognition. In general, we can take an arbitrary basis for $V$ and build the volume element
+\begin{equation}
+\label{eq:volume_scaling}
+    \mu \blade{I} \coloneqq \blade{e}_1 \wedge \cdots \wedge \blade{e}_n,
+\end{equation}
+where the unit blade $\pseudoscalar$ is the \emph{unit pseudoscalar} and the scalar $\mu$ is the volume scale factor. Hence, from before, 
+\begin{equation}
+\label{eq:blade_decomposition}
+    \blade{U_k}\wedge \blade{U_k}^\perp = \pseudoscalar.
+\end{equation}
+A decomposition of the vector space $V$ corresponds directly to a blade decomposition of the unit pseudoscalar. That is because $\pseudoscalar$ corresponds directly to the single point in $\mathrm{Gr}(n,n)$, i.e., the entire vector space.
+
+If we follow \cref{eq:blade_decomposition}, right multiplication by a multiplicative inverse to $\pseudoscalar$ would yield
+\begin{equation}
+\label{eq:dual_motivation}
+    (\blade{U_k}\wedge \blade{U_k}^\perp)\pseudoscalar^{-1} = 1.
+\end{equation}
+This motivates the following definition.
+
+\begin{definition}
+Let $A \in G$ be a multivector, then the \emph{dual of $A$} is
+\begin{equation}
+\label{eq:dual}
+A^\perp \coloneqq A\pseudoscalar^{-1}.
+\end{equation}
+\end{definition}
+
+Returning to \cref{eq:dual_motivation}, we realize that the dual must satisfy
+\begin{equation}
+(A\wedge B)^\perp = A\contract B^\perp.
+\end{equation}
+as well as
+\begin{equation}
+(A\contract B)^\perp = A\wedge B^\perp.
+\end{equation}
+After all, this is all just manipulation of subspaces. This may help elucidate the geometrical meaning of $\contract$ and $\wedge$. If you would like even more intuition and examples, please see Chisolm's paper \cite{chisolm_geometric_2012}. It is worth saying that in $\G_{0,n}$ we have $\pseudoscalar^{-1}=\pseudoscalar^\dagger$. More care must be taken in more general $\G$. 
+\begin{remark}
+In the exterior algebra there is always a pseudoscalar that lets us define a notion of duality $\perp$. In fact, this is how the Hodge star is usually defined. Hence, given $\perp$, our multivector inner product can assume the form
+\begin{equation}
+    (A,B)\colloneqq \proj{n}{A(B^\dagger)^\perp}.
+\end{equation}
+We return to the Hodge star later.
+\end{remark}
+
+\begin{remark}
+For those familiar with the exterior algebra, $\perp$ is very closely related to the Hodge star $\star$ and we will see this later. Moreover, both $\perp$ and $\star$ do not require a metric, just an orientation on the manifold.
+\end{remark}
+
+Another utility of subspaces is the notion of projection. Usually this is captured by idempotent linear transformations, but we can just use multiplication in $\G$.
+\begin{definition}
+Given an multivector $a$ and unit $k$-blade $\blade{u_k}$, the \emph{orthogonal projection} onto the subspace $\blade{u_k}$ is
+\begin{equation}
+\label{eq:projection}
+\projection_{\blade{u_k}}(a) \coloneqq (a\contract \blade{u_k}) \blade{u_k}^{-1}.
+\end{equation}
+\end{definition}
+%Null subspaces cannot be orthogonally projected into, so to deal with that we need a slightly more general notion.
+%\begin{definition}
+% Suppose further that the $k$-blade is given by $\blade{a_k}=\blade{v}_1\wedge \cdots \blade{v}_k$ and extend to a basis using $\blade{v}_{k+1},\dots,\blade{v}_n$. Then define the linear map $\rho \colon V \to U$ by 
+% \begin{equation}
+%      T(\blade{v}_i) = \begin{cases}
+%         \blade{v}_i & 1\leq i\leq k\\
+%         0 & \textrm{otherwise}.
+%     \end{cases}
+% \end{equation}
+% Then the \emph{restriction} of a multivector $b$ to the subspace $\blade{a_k}$ is the extension to $\G$ defined on blades by
+% \begin{equation}
+%     \rho(\blade{v}_{i_1} \wedge \cdots \wedge \blade{v}_{i_j}) = \rho(\blade{v}_{i_1}) \wedge \cdots \wedge \rho(\blade{v}_{i_j})
+% \end{equation}
+% \end{definition}
+It is worth noting that the projection preserves. Let us now turn to an in depth example.
+
+\subsection{Minkowski Space and the Spatial Subspaces}
+\colin{An example of projection onto a null subspace would be good.}
+We will construct one large example for which most of the preliminaries to this point can be used in a meaningful way. Our go-to example is the \emph{spacetime algebra} defined by taking $V=\R^4$ with a vector basis $\blade{e}_0,\blade{e}_1,\blade{e}_2,\blade{e}_3$ satisfying
+\begin{subequations}
+\begin{align}
+\blade{e}_0 \cdot \blade{e}_0 &= -1\\
+\blade{e}_0 \cdot \blade{e}_i &= 0  &i=1,2,3\\
+\blade{e}_i \cdot \blade{e}_j &= \delta_{ij}, &i,j=1,2,3.
+\end{align}
+\end{subequations}
+Note that $\blade{e}_0$ is temporal and $\blade{e}_i$ for $i=1,2,3$ are spatial since their squares are positive. We refer to the geometric space $(\R^4, \eta)$ as \emph{Minkowski space}. For this basis, the matrix for this inner product in this basis assumes the form $\eta =\operatorname{diag}(-1,~ +1,~ +1,~+1)$ and we refer to this as \emph{Minkowski metric}. The associated quadratic form $Q$ can be found from the bilinear form $\eta$ by polarization. For a spacetime vector $\blade{v} = v_0 \blade{e}_0 +v_1 \blade{e}_1 + v_2 \blade{e}_2 + v_3 \blade{e}_3$,
+\begin{equation}
+\label{eq:spacetime_inner_product}
+|\blade{v}|^2 = (\blade{v},\blade{v}) = \blade{v} \cdot \blade{v} = -v_0^2 + \sum_{i=1}^3 v_i^2.
+\end{equation}
+It is clear that the norm is definite when all vectors are spatial, but in the case of spacetime there are null vectors $\blade{c}$ such that $|\blade{c}|=0$. For example, $\blade{c}=\blade{e}_0 + \blade{e}_1$. The collection of null vectors define the light cone in Minkowski space. Also, it is important to distinguish these null vectors from degenerate vectors. Though $\blade{c}$ is null, it is not true that for any $\blade{c}$ and all other vector $\blade{v}$ that $\blade{c} \cdot \blade{v}=0$. No such degenerate vectors exist since $\eta$ is nonsingular.\colin{Talk about lorentz transformations / spin group here}
+
+As the notation above suggests, the geometric algebra of Euclidean space $\R^3$, $\G_{0,3}$ appears inside of the spacetime algebra. The spatial \emph{trivector} $\blade{e}_1 \blade{e}_2 \blade{e}_3$ is unit
+\begin{equation}
+|\blade{e}_1 \blade{e}_2 \blade{e}_3| = \sqrt{\proj{}{(\blade{e}_1 \blade{e}_2 \blade{e}_3)^\dagger \blade{e}_1 \blade{e}_2 \blade{e}_3}} = \sqrt{\proj{}{\blade{e}_3 \blade{e}_2 \blade{e}_1 \blade{e}_1 \blade{e}_2 \blade{e}_3}}=1
+\end{equation}
+and represents the spatial subspace $\mathrm{Span}(\blade{e}_1, \blade{e}_2, \blade{e}_3) \subset \R^4$. To compactify notation, we define use the basis blades/versors $\blade{E}_{\mathcal{I}}$ as defined previously by denoting $\blade{E}_{123}=\blade{e}_1\blade{e}_2\blade{e}_3$ or as another example $\blade{E}_{4231}=\blade{e}_4\blade{e}_2\blade{e}_3\blade{e}_1$. 
+
+With slight abuse of notation, the projection of $\G_{1,3}$ onto this subspace yields
+\begin{equation}
+\projection_{\blade{E}_{123}}(\G_{1,3}) = \G_{0,3}.
+\end{equation}
+In $\G_{0,3}$, we can specify an arbitrary multivector $A$ by
+\begin{equation}
+A= a_0 + a_1 \blade{e}_1 + a_2 \blade{e}_2 + a_3 \blade{e}_3 + a_{12} \blade{E}_{12} + a_{13} \blade{E}_{13} + a_{23} \blade{E}_{23} + a_{123} \blade{E}_{123}.
+\end{equation}
+The grade projections are
+\begin{subequations}
+\begin{align}
+\proj{}{A}&=a_0\\
+\proj{1}{A}&=a_1 \blade{e}_1 + a_2 \blade{e}_2 + a_3 \blade{e}_3\\
+\proj{2}{A}&=a_{12} \blade{e}_{12} + a_{13} \blade{e}_{13} + a_{23} \blade{E}_{23}\\
+\proj{3}{A}&= a_{123} \blade{E}_{123}.
+\end{align}
+\end{subequations}
+Hence, we can write a spinor as
+\begin{equation}
+A_+ = a_0 + a_{12} \blade{E}_{12} + a_{13} \blade{E}_{13} + a_{23}\blade{E}_{23}.
+\end{equation}
+Note as well that the spatial unit 2-blades always satisfy
+\begin{align}
+\blade{E}_{23}^2 = \blade{E}_{13}^2 = \blade{E}_{12}^2 = -1
+\end{align}
+and we find that
+\begin{equation}
+\blade{E}_{23}\blade{E}_{13}\blade{E}_{12} = -1.
+\end{equation}
+Hence, the even subalgebra $\G_{0,3}^+$ isomorphic to the quaternion algebra $\quat$ by
+\begin{equation}
+\mathbf{i} \leftrightarrow \blade{E}_{23}, \quad \mathbf{j} \leftrightarrow \blade{E}_{13}, \quad \mathbf{k} \leftrightarrow \blade{E}_{12}
+\end{equation}
+Given a quaternion, there is an equivalent spinor $A_+$; the imaginary part of the quaternion corresponds to the grade two part of the spinor $\proj{2}{A_+}$.
+
+We can project down one dimension further by $\projection_{\blade{E}_{12}} (\G_{0,3}) = \G_{0,2}$ and
+we can verify quickly that
+\begin{subequations}
+\begin{align}
+    \projection_{\blade{e}_1 \blade{e}_2}(A) =  a_0 + a_1 \blade{e}_1 + a_2 \blade{e}_2 + a_{12} \blade{E}_{12}.
+\end{align}
+\end{subequations}
+Given that $\blade{E}_{12}^2=-1$ we can put $z \coloneqq x + y \blade{B}_{12} \in \G_{0,2}^+$ for $x,y\in \R$ which is exactly a representation of the complex number $\zeta = x+ \mathbf{i}y$ in $\C$ and $\mathbf{i}$ here can be thought of as the unit pseudoscalar in the plane. Again, the imaginary part is $\proj{2}{z}$.
+
+
+\section{Fields on Manifolds}\label{sec:fields}
+
+The purpose of defining fields on manifolds for us is to allow ourselves to have a parameterized version of multivectors. There is so much to be gained by assigning multivectors at every point on a manifold. For example, physics treats manifolds as state or configuration spaces and the fields can describe statics or dynamics. Mathematically, studying the topologic or geometric structure of manifolds is akin to understanding the spaces of fields the manifolds can support.
+
+Given a smooth manifold $M$ with boundary $\partial M$, each tangent space $T_xM$ is a vector space. At each point $x$, if we have a symmetric bilinear form $g$, then we can make build the \emph{geometric tangent space} $\G_x M \coloneqq C\ell(T_xM,g_x)$. If the bilinear form varies smoothly along $M$ (formally, it is a smooth section of the tensor bundle), then the geometric tangent spaces are glued together to form the geometric algebra bundle $\G M\coloneqq \bigsqcup_{x\in M}\G_x M$. The $C^\infty$-smooth sections of $\G M$ will be denoted by $\G(M)$ and called \emph{multivector fields}. 
+
+To see an example of how this process uses a manifold as a means of parameterization let us define the following.
+\begin{definition}
+A distribution $U$ is a smoothly varying choice of subspaces of $T_xM$ for all $x\in M$, i.e., a distribution is a choice of subbundle $U\subset TM$.
+\end{definition}
+Equivalently, any distribution $U$ is simply a unit $k$-blade field $\blade{u_k}$ since $\blade{u_k}(x)$ represents a subspace of $T_xM$ for all $x$ so $\blade{u_k}$ represents a subbundle.
+
+\begin{remark}
+Furthermore, it is worth noting that while we want to handle manifolds with non-definite $g$, it is always possible to provide a definite $g$ to make any smooth oriented manifold Riemannian. We will inherently use this fact along the way and will use this especially as we look at differential forms and their pullback. When a manifold has non-definite $g$ as in Lorentzian geometry, there exist null manifolds, i.e., manifolds where the pullback of $g$ is degenerate. To rid of this, we can always choose a definite $g$ even on those manifolds and the reality is that we are just using the volume form and much of what we see here is diffeomorphism invariant.
+\end{remark}
+
+
+\subsection{Clifford Analysis}
+
+Let $\nabla$ be the Levi--Civita connection on $M$. Then for a vector field $\blade{v}$ we have the covariant derivative $\nabla_{\blade{v}}$ which is extended to multivector fields, e.g., by \cite{schindler_geometric_2020}. Given local coordinates $x^i$ on $M$ we have the induced (gradient) basis $\blade{e}_i(x)\in \G_xM$. Suppressing the pointwise notation, $\blade{e}_i\cdot \blade{e}_j = g_{ij}$. Also in the tangent space are the reciprocal vectors $\blade{e}^i$ which are Riesz representatives corresponding to the dual basis $dx^i$ since $dx^i(\blade{e}_j) = \blade{e}^i \cdot \blade{e}_j$. We will not get rid of the dual basis entirely since we still find use for the elements as coordinate measures in integration. Basis blades $\blade{E}_\mathcal{I}$ and their reciprocals $\blade{E}^\mathcal{I}$ carry over to each tangent space as well. 
+
+The \emph{Hodge--Dirac operator} (or \emph{gradient}) $\grad$ in these coordinates is
+\begin{equation}
+    \grad \coloneqq \sum_{i=1}^n \blade{e}^i \nabla_{\blade{e}_i}.
+\end{equation}
+This derivative acts algebraically as a vector and
+\begin{equation}
+\grad f = \grad \contract f + \grad \wedge f.
+\end{equation}
+In particular, $\grad \wedge$ is equivalent to the exterior derivative $d$ on differential forms $\Omega(M)$, $\grad \contract$ is equivalent to the codifferential $\delta$. We have the properties that
+\begin{equation}
+    \grad \wedge \grad \wedge = 0 \qquad \textrm{and} \qquad \grad \contract \grad \contract = 0.
+\end{equation}
+Moreover, the operator $\grad$ is spin invariant, which will be important later. We can define the the operator 
+\begin{equation}
+    \grad^2 = \grad \wedge \grad \contract + \grad \contract \grad \wedge.
+\end{equation}
+Note that $\grad^2$ is grade preserving and in $\G_{0,n}$ it is (up to a sign) the Laplace--Beltrami operator and in $\G_{1,3}$ it is the wave operator. The kernel of $d-\delta$ on $\Omega^k(M)$ is coupled to the (co)homology of $M$ and so $\grad$ retains this property as well. This relationship of the analysis of $d-\delta$ (and equivalently $\grad$) to the absolute and relative (co)homology of $M$ is formalized in Hodge theory and is useful for proving existence and uniqueness for boundary value problems \cite{schwarz_hodge_1995}. 
+
+\begin{definition}
+Let $f\in \smoothfields{M}{\G}$, then we say that $f$ is \emph{monogenic} if $\grad f = 0$. We denote the space of monogenic fields by $\monogenics(M)$.
+\end{definition}
+
+Multivectors consisting of multiple grades that in the kernel of $\grad$ satisfy generalized Cauchy--Riemann equations. This becomes interesting since grades can ``mix'' together. For example, take $f_+ = f_0 + f_2 \pseudoscalar$ in defined on the unit disk $\mathbb{D} \subset \R^2$ where $\pseudoscalar$ is the unit pseudoscalar field then
+\begin{equation}
+\grad f_+ = \grad \wedge f_0 + \grad \contract ( f_2 \pseudoscalar).
+\end{equation}
+If we considered only singly graded elements such as the scalar fields $f_0$ or bivector fields $f_2 \pseudoscalar$ on their own, then the only elements in $\ker \grad$ are constant fields. Combine them together into a spinor field $f_+ \in \G^+(\mathbb{D})$ and this can now be any holomorphic function such as $z=x^1+x^2\pseudoscalar$. If $\grad f_+ =0$ then we get the classical Cauchy--Riemann equations
+\begin{align}
+\label{eq:cauchy_riemann_equations}
+\frac{\partial f_0}{\partial x^1} &= \frac{\partial f_2}{\partial x^2} & \frac{\partial f_0}{\partial x^2} &= -\frac{\partial f_2}{\partial x^1}
+\end{align}
+which shows the function $z$ is indeed monogenic. For more detail on the relationship of monogenic spinor fields to complex holomorphic functions see Doran and Lasenby \cite[\S 6.3.1]{doran_geometric_2003}.
+
+Since $\grad$ is grade-1, we have $\grad \colon \smoothfields{M}{\G^{\pm}} \to \smoothfields{M}{\G^\mp}$ which yields the direct sum decomposition
+\begin{equation}
+    \monogenics(M) = \monogenics^+(M) \oplus \monogenics^-(M).
+\end{equation}
+We can note that each of the graded components of $f_+\in \monogenics^+(M)$ are also harmonic $\Delta \proj{2k}{f_+}=0$. Also, the fact that a product of spinor fields is again a spinor field will make it more convenient to work with $\monogenics^+(M)$ instead of the whole of $\monogenics(M)$. 
+
+
+
+
+\subsection{Integration and Relation to Forms}
+
+Integration on manifolds requires differential forms. In essence, a differential form consists of a $k$-vector fields with an attached coordinate measure. Let the measures be $dx^i$ in local coordinates and let $\blade{e}^i$ be the corresponding reciprocal vectors. The \emph{basic directed measures} are $d\blade{x}^i = \blade{e}^i dx^i$ (no summation implied) and they determine the \emph{$k$-dimensional directed measures}
+\begin{equation}
+    dX_k \coloneqq \frac{1}{k!} \sum_{i_1 < \cdots < i_k} d\blade{x}^{i_1}\wedge \cdots \wedge d\blade{x}^{i_k} = \frac{1}{k!} \sum_{\mathcal{I}} \blade{E}_{\mathcal{I}} dx^{\mathcal{I}}
+\end{equation}
+An arbitrary differential $k$-form $\alpha_k$ is given by taking a corresponding $k$-vector $A_k$ and contracting along the $k$-dimensional directed measure
+\begin{equation}
+\alpha_k = A_k \contract dX_k^\dagger.
+\end{equation}
+Specifically, $A_k = \sum_{\mathcal{I}} \alpha_{\mathcal{I}} \blade{E}^{\mathcal{I}}$ is called the \emph{multivector equivalent of $\alpha_k$}. This is a realization of the isomorphism between $\G(M)$ and $\Omega(M)$ as $C^\infty(M)$-modules and it can be viewed as an extension of the musical isomorphisms \cite[chapter 13]{lee_introduction_2012}. 
+
+Since our manifold carries a nonsingular $g$, we have a volume form $\mu$ which has the multivector equivalent $\pseudoscalar^{-1 \dagger}$ which we can see by referencing \cref{eq:volume_scaling} and in this case we get the volume scale factor $\sqrt{|\det g|}$. We can note as well $\blade{I}(x)$ represents the tangent space $T_x M$. When $\partial M \neq \emptyset$, we have the \emph{boundary pseuodoscalar} $\blade{I}_\partial$ and dual to this the boundary normal field $\normal = \pseudoscalar_\partial^\perp$. As on $M$, $\blade{I}_\partial^{-1 \dagger}$ is the multivector equivalent of the boundary area form $\mu_\partial$. From this point forward, we work solely with multivector fields and contract with directed measures to integrate. 
+
+For smooth $k$-forms $\alpha_k$ and $\beta_k$, we have an $L^2$-inner product 
+\begin{equation}
+\int_M \alpha_k \wedge \star \beta_k 
+\end{equation}
+where $\star$ is the Hodge star. By definition, the Hodge star acts on $k$-forms by returning a Hodge dual $n-k$-form so that on the multivector equivalents we have
+\begin{equation}
+\alpha_k \wedge \star \beta_k  = (A_k,B_k)\mu
+\end{equation}
+as well as
+\begin{equation}
+    \alpha_k \wedge \star \alpha_k = |A_k|^2\mu.
+\end{equation}
+For the action of $\star$ on the multivector equivalents we will put $B_k^\star$ for which we have
+\begin{equation}
+B_k^\star = (\pseudoscalar^{-1} B_k)^\dagger
+\end{equation}
+and we can quickly verify that
+\begin{align}
+\alpha_k \wedge \star \beta_k = (A_k \wedge B_k^\star)\contract dX_n^\dagger  =(A_k\contract B_k^\dagger) \pseudoscalar^{-1 \dagger} \contract dX_n^\dagger = (A_k,B_k)\mu.
+\end{align}
+If we compute $d$ and $\delta$ on forms, then we see that on the multivector equivalents
+\begin{align}
+\label{eq:hodge_star}
+d \alpha_k &= (\grad \wedge A_k) \contract dX_{k+1}^\dagger, & \delta \alpha_k &= (-\grad \contract A_k)\contract dX_{k-1}^\dagger,
+\end{align}
+since, by definition, $\delta = (-1)^{n(k+1)+1+p}\star d \star$. 
+
+The Hodge star allows us to define can now define an $L^2$ inner product forms and we can do so on multivector fields as well.
+\begin{definition}
+\label{def:multivector_field_inner_product}
+Let $A$ and $B$ be multivector fields. Then the \emph{multivector field inner product} is defined by
+\begin{equation}
+\label{eq:multivecinnerproduct}
+\multivecinnerproduct{A}{B} \coloneqq \int_M (A,B) \mu.
+\end{equation}
+If $\multivecinnerproduct{A}{B} = 0$, then we say the fields $A$ and $B$ are \emph{orthogonal}.
+\end{definition}
+It is clear from \cref{eq:hodge_star} that \cref{eq:multivecinnerproduct} on multivector equivalents is equal to the $L^2$ product on forms. We note that the multivector field inner product is only definite when $g$ is definite. The orthogonal direct sum with respect to the $L^2$ multivector inner product agrees with the grade based direct sum. It will suffice to use the symbol $\oplus$ for both. One should view this as a slight extension to the $r$-form inner product that garners the ability to consider the inner product of elements that are not necessarily homogeneous in grade. 
+
+\begin{remark}
+It may seem like it takes a bit of finesse to retrieve what the Hodge star does for forms, but we can see a bit more of the details of what the star does in this format. It's also worth noting that the inner product of multivector fields is notationally a bit more convenient and relates to the inner product on $\G$ more naturally.
+\end{remark}
+
+\subsection{Stokes' and Green's Formula}
+
+\colin{I think it would be much easier to redo this little section in terms of chains and integrating $k$-vectors on $k$-chains}
+
+\subsubsection{Arbitrary Submanifolds}
+Let $K$ be a $k$-dimensional submanifold of $K$, $\pseudoscalar_K$ be the unit pseudoscalar field on $K$, and let $\mu_K$ be the volume measure. Given $K$ is a submanifold of $M$, for any $x \in K$ we have tangent space $T_x K$ which is a subspace of $T_x K$. There is also the normal space $N_x K$ that is everywhere orthogonal to $T_x K$ with respect to $g$ on $M$. This is a orthogonal subspace decomposition $T_x M = T_x K \oplus N_x K$. As in \cref{eq:dual_motivation}, we get $\normal_K = \pseudoscalar_K^\perp$ that represents the subspace $N_x K$ and $\pseudoscalar_k \wedge \normal_K = \pseudoscalar$.
+
+We can put $\blade{I}_K(x)^{-1 \dagger}$ to be the multivector equivalent of $\mu_K$ by
+\begin{equation}
+\label{eq:submanifold_volume_form}
+\mu_K = \blade{I}_K^{-1 \dagger} \cdot dX_r^\dagger = \blade{I}_K^{-1} \cdot dX_k.
+\end{equation}
+Please do note that implicit in this definition is the support of $\pseudoscalar_K$ is $K$. If one would like, you can attach the indicator function $\chi_K$ to the fields and measures, but in our notation we assume $\chi_K \pseudoscalar_K = \pseudoscalar$ as well as $\chi_k \mu_K = \mu_K$. 
+
+\colin{I am concerned about this a bit. But the restriction I was defining seems to coincide with \url{https://physics.stackexchange.com/questions/446404/what-is-the-length-of-null-geodesic}}
+\begin{remark}
+Note that if $K$ is a null submanifold, then $K$ has no intrinsic volume. Take for instance a light-like curve.
+\end{remark}
+
+\begin{definition}
+An $\ell$-vector field $A_\ell$ is \empph{tangent to a submanifold $K$} if
+\begin{equation}
+    \projection_{\pseudoscalar_K}(A_\ell)=A_\ell.
+\end{equation}
+\end{definition}
+The notion of being tangent coincides with the pullback of inclusion of the submanifold $K\hookrightarrow M$ in the following sense.
+\begin{proposition}
+Let $\alpha_\ell$ be an $\ell$-form with multivector equivalent $A_\ell$ defined on $M$ and let $\iota \colon K \to M$ be the inclusion of the submanifold $K$ into $M$. Then the pullback $\iota^*$ on $\alpha_\ell$ corresponds to 
+\begin{equation}
+\iota^* \alpha_\ell = \projection_{\pseudoscalar_K}(A_\ell) \cdot dX_\ell^\dagger
+\end{equation}
+on the multivector equivalent. Furthermore, if $\ell=k$, then
+\begin{equation}
+\label{eq:pullback_of_k_form}
+    \iota^* \alpha_k = (A_k, \pseudoscalar_K) \mu_K.
+\end{equation}
+\end{proposition}
+\begin{proof}
+Let $\blade{v}_1,\dots,\blade{v}_\ell \in T_x M$ and note that by definition of the pullback we have
+\begin{equation}
+    (\iota^* \alpha_\ell)_x (\blade{v}_1,\dots,\blade{v}_\ell) = (\alpha_s)_x(d\iota_x\blade{v}_1,\dots, d\iota_x\blade{v}_\ell ),
+\end{equation}
+Then, since $\iota$ is inclusion, we have $d\iota_x = \projection_{\pseudoscalar_K(x)}$ at each point $x \in K$ and hence $\iota^* \alpha_\ell = \alpha_\ell \circ \projection_{\pseudoscalar_K}$. For all $\blade{v}_i$ we can put
+\begin{equation}
+    \blade{v}_i = \projection_{\pseudoscalar_K}(\blade{v}_i) + \projection_{\normal_K}(\blade{v}_i),
+\end{equation}
+and note for the multivector equivalent
+\begin{align}
+(\projection_{\pseudoscalar_K}(A_\ell) \contract dX_\ell^\dagger)(\blade{v}_1,\dots,\blade{v}_\ell) &= (\projection_{\pseudoscalar_K}(A_\ell) \contract dX_\ell^\dagger)(\projection_{\pseudoscalar_K}(\blade{v}_1) + \projection_{\normal_K}(\blade{v}_1),\dots,\projection_{\pseudoscalar_K}(\blade{v}_\ell) + \projection_{\normal_K}(\blade{v}_\ell))\\
+&= (\projection_{\pseudoscalar_K}(A_\ell) \contract dX_\ell^\dagger)(\projection_{\pseudoscalar_K}(\blade{v}_1),\dots,\projection_{\pseudoscalar_K}(\blade{v}_\ell))\\
+&= (A_\ell \contract dX_\ell^\dagger)(\projection_{\pseudoscalar_K}(\blade{v}_1),\dots,\projection_{\pseudoscalar_K}(\blade{v}_\ell))
+\end{align}
+since $\projection_{\pseudoscalar_K}(A_\ell)$ is supported only on $K$. If $\ell > k$ we see that $\iota^* \alpha_\ell = 0 = \projection_{\pseudoscalar_K}(A_\ell)$. Finally, if $\ell = k$, we can note that 
+\begin{equation}
+    \projection_{\pseudoscalar_K}(A_k)\contract dX_k^\dagger = (A_k \contract \pseudoscalar_K)\pseudoscalar_K^{-1} \contract dX_k^\dagger =  (A_k \contract \pseudoscalar_K^\dagger)\pseudoscalar_K^{-1}^\dagger \contract dX_k^\dagger = (A_k,\pseudoscalar_K)\mu_K
+\end{equation}
+which finishes the proposition.
+\end{proof}
+
+\begin{remark}
+If however the metric $g$ degenerates on a chain $K$, $K$ still has a well defined pseudoscalar $\pseudoscalar_K$ volume measure $\mu_K$ and we still get the action pullback of a $k$-form on the multivector equivalent by \cref{eq:pullback_of_k_form}. All that definition requires is a notion of a volume element. For example, if $\pseudoscalar_K=\blade{E}_{\mathcal{I}}$ then 
+\begin{equation}
+    \iota^* \alpha_k = (a_k,\pseudoscalar_K)\mu_K = a^{\mathcal{I}} \mu_K.
+\end{equation}
+\end{remark}
+
+
+The above proposition motivates us to define the following.
+\begin{definition}
+Let $A\in \G(M)$ be a multivector field and $K\subset M$ a submanifold. We define the \emph{tangent part of $A$} by
+\begin{equation}
+    \tangentpart(A) = \projection_{\pseudoscalar_K}(A)
+\end{equation}
+and the \emph{normal part of $A$} by
+\begin{equation}
+\label{eq:normalpart_def}
+    \normalpart(A) = A - \tangentpart(A).
+\end{equation}
+\end{definition}
+These are used throughout the text \cite{schwarz_hodge_1995} and we will need them here.
+
+\subsubsection{Boundary Submanifold}
+
+The most natural submanifold for a manifold $M$ is the boundary $\partial M$. In this case, the boundary is codimension 1 inside $M$ and some of the computations become clearer. Let $\pseudoscalar_\boundary$ denote the tangent $n-1$-blade on $\partial M$ and build boundary measure via
+\begin{equation}
+\mu_\partial \coloneqq \pseudoscalar_\boundary^{-1} \cdot dX_{n-1}.
+\end{equation}
+The normal space is 1-dimensional and we put $\normal\coloneqq \pseudoscalar_\boundary^\perp $ to refer to the boundary normal space. 
+
+Let us put $\G(\partial M)\coloneqq \G(M)\vert_\boundary$ to represent the space of fields defined on $\partial M$ that are restrictions of fields on $M$. This space contains field not just tangent to $\boundary$, but fields that have a normal component as well. Hence, we will need to know whether components of field is tangent or normal to the boundary $\partial M$ and this decomposition will be especially useful for studying homology and cohomology. To work this out, let $\normal,\blade{e}_1,\dots,\blade{e}_{n-1}$ be an orthornormal vector basis for $\G_xM$ for $x\in \partial M$ and let $\blade{E}_\mathcal{I}$ be the associated orthornormal basis versors. Then, for any multivector $A\in \G_xM$ we have
+\begin{equation}
+\label{eq:tangent_normal_decomposition}
+A = \sum_{\normal \in \mathcal{I}} A^{\normal \in \mathcal{I}} \blade{E}_{\normal \in \mathcal{I}} + \sum_{{\normal \notin \mathcal{I}} } A^{{\normal \notin \mathcal{I}}} \blade{E}_{\normal \notin \mathcal{I}} 
+\end{equation}
+where the notation $\normal \in \mathcal{I}$ means to consider only versors who have $\normal$ appear and $\normal \notin \mathcal{I}$ takes only those where $\normal$ does not appear. It is clear that $\pseudoscalar_\boundary = \blade{e}_{1}\blade{e}_{2}\cdots \blade{e}_{n-1}$ and therefore
+\begin{equation}
+\label{eq:tangentpart}
+\tangentpart(A) = \projection_{\pseudoscalar_\boundary}(A) = \sum_{{\normal \notin \mathcal{I}} } A^{{\normal \notin \mathcal{I}}} \blade{E}_{\normal \notin \mathcal{I}}.
+\end{equation}
+and hence the normal part is clear
+\begin{equation}
+\label{eq:normalpart}
+\normalpart(A) = \sum_{\normal \in \mathcal{I}} A^{\normal \in \mathcal{I}} \blade{E}_{\normal \in \mathcal{I}}
+\end{equation}
+Of course, this is all done pointwise, but it extends nicely to a field $A\in \G(\partial M)$. In particular, the act of extracting the tangent and normal parts is captured by geometric multiplication. One can also think of it as a check for if characters exist in a collection of words.
+
+\begin{proposition}
+\label{prop:tangent_normal_proposition}
+Let $\phi \in \G(\boundary)$, then 
+\begin{enumerate}[i.]
+\item $\phi \in \ker \tangentpart$ if and only if $\normal \contract \phi = 0$.
+\item $\phi \in \ker \normalpart$ if and only if $\normal \wedge \phi = 0$.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+The proof is immediate given \cref{eq:tangentpart,eq:normalpart}. First, if $\phi \in \ker \tangentpart$ then $\phi = \normalpart \phi$ by \cref{eq:tangent_normal_decomposition}. Hence,
+\begin{equation}
+\normal \contract \phi = \sum_{{\normal \notin \mathcal{I}} } \phi^{{\normal \notin \mathcal{I}}} \normal \contract \blade{E}_{\normal \notin \mathcal{I}}
+\end{equation}
+but $\normal \contract \blade{E}_{\normal \notin \mathcal{I}} = 0$ and thus we have the first direction. On the other hand, if $\normal \contract \phi = 0$ then every $\phi^{\normal \in \mathcal{I}}=0$ which finishes the proof for (i). The proof for (ii) is done \emph{mutatis mutandis}.
+\end{proof}
+
+With the above work taken care of, we can now report one of the most important theorems that will underlie nearly everything we do here. We will not provide a proof for this theorem directly, but one can see \cite{schwarz_hodge_1995} for version using differential forms. We will just convert this to forms in the proof to realize this. 
+
+\begin{theorem}[Stokes' Theorem]
+Let $M$ be a manifold with boundary $\boundary$ and let $A_{n-1} \in \G(M)$ be a pseudovector field. Then,
+\begin{equation}
+    \label{eq:stokes_theorem}
+    \int_M (\grad \wedge A_{n-1}, \pseudoscalar) \mu = \int_\boundary (A_{n-1},\pseudoscalar_\boundary)\mu_\boundary.
+\end{equation}
+\end{theorem}
+\begin{proof}
+We will work with both sides simultaneously starting with the equations for forms. Let $\alpha_{n-1}=A_{n-1}\contract dX_{n-1}$ be a $n-1$-form then we have
+\begin{align}
+    \int_M d\alpha_{n-1} &= \int_\boundary \iota^* \alpha_{n-1}\\
+ \iff \qquad   \int_M (\grad \wedge A_{n-1})\contract dX_n^\dagger &= \int_\boundary \projection_{\pseudoscalar_\boundary}(A_{n-1})\contract dX_{n}^\dagger\\
+ \iff \qquad  \int_M (\grad \wedge A_{n-1})\pseudoscalar^{\dagger} \pseudoscalar^{{-1} \dagger} dX_{n-1}^\dagger &= \int_\boundary (A_{n-1},\pseudoscalar_\boundary)\mu_\boundary\\
+ \iff \qquad \int_M (\grad \wedge A_{n-1},\pseudoscalar) \mu &= \int_\boundary (A_{n-1},\pseudoscalar_\boundary)\mu_\boundary.
+\end{align}
+\end{proof}
+
+The above version of Stokes' theorem decouples the geometry of the manifold and boundary in $\mu$ and $\mu_\boundary$ from the fields $\grad \wedge A_{n-1}$ and $A_{n-1}$. This, for example, becomes of use if $M$ is embedded in a higher dimensional $\R^m$ with $m>n$ or if we applied the above to a submanifold $K\subset M$. In this case
+\begin{equation}
+    \int_K (\grad \wedge A_{k-1},\pseudoscalar_K)\mu_K = \int_{\partial K} (A_{k-1},\pseudoscalar_{\partial K})\mu_{\partial K}.
+\end{equation}
+The latter fact will also be more important when we are doing homology and cohomology. Note that we could also put
+\begin{equation}
+    \int_K (\grad \wedge A_{k-1}, \pseudoscalar_K)\mu_K = \int_{\partial K} (\normal \wedge A_{k-1}, \pseudoscalar_K)\mu_{\partial K}.
+\end{equation}
+In essence, the operatation with $\grad \wedge$ on a manifold can be exchanged with operation $\normal \wedge$ on the boundary.
+
+A dual notion of Stokes' theorem exist for vector fields. Let $\blade{v} \in \G^1(M)$ be a vector field, then $\blade{v}^\perp$ is a pseudoscalar field and $\grad \wedge \blade{v}^\perp = (\grad \contract \blade{v})^\perp$. Hence, it follows that
+\begin{equation}
+\label{eq:divergence_theorem}
+    \int_M \grad \contract \blade{v} \mu = \int_\boundary \normal \contract \blade{v} \mu_\boundary,
+\end{equation}
+which is the typical form of the divergence theorem. In this sense, the operation $\grad \contract$ on the manifold is replaced by $\normal \contract$ on the boundary. It is also worth noting that more general versions of Stokes' theorem exist for multivector fields. For example, see \cite{doran_geometric_2003}. Next, we will show the Green's formula which follows directly from Stokes' theorem.
+
+\begin{proposition}[Green's Formula]
+Let $A_{k-1}, B_k \in \G(M)$, then we have Green's formula
+\begin{equation}
+\multivecinnerproduct{\grad \wedge A_{k-1}}{B_r} = -\multivecinnerproduct{A_{k-1}}{\grad \contract B_k} + \multivecinnerproduct{\normal \wedge A_{k-1}}{B_k}_\boundary.
+\end{equation}
+\end{proposition}
+\begin{proof}
+We have
+\begin{align}
+    \int_M (\grad \wedge [(A_{k-1}\contract B_k)^\perp],\pseudoscalar)\mu &= \int_M (\grad \wedge (A_{k-1} \wedge B_k^\perp),I)\mu\\
+    &= \int_\boundary (A_{k-1} \wedge B_k^\perp, \pseudoscalar_\boundary) \mu_\boundary\\
+    &= \int_\boundary ((A_{k-1} \contract B_k) \pseudoscalar^{-1} \pseudoscalar^\dagger,\normal) \mu_\boundary &&\textrm{since $\normal = \pseudoscalar_\boundary^\perp$ and $\dagger$ is the adjoint}\\
+    &= (-1)^{\frac{n(n-1)}{2}} \int_\boundary (A_{k-1} \contract B_r, \normal)\mu\\
+    &= (-1)^{\frac{n(n-1)}{2}} \int_\boundary (\normal \wedge A_{k-1}, B_r)\mu
+\end{align}
+since $\pseudoscalar^\dagger = (-1)^{\frac{n(n-1)}{2}} \pseudoscalar$. On the other hand,
+\begin{align}
+    \int_M (\grad \wedge (A_{k-1} \wedge B_k^\perp),\pseudoscalar)\mu &= \int_M \left( (\grad \wedge A_{k-1})\wedge B_r^\perp + (-1)^{k-1} A_{k-1} \wedge (\grad \wedge B_k^\perp),\pseudoscalar \right) \mu\\
+    &= \int_M \left( [(\grad \wedge A_{k-1}) \contract B_{k}]^\perp , \pseudoscalar \right)\mu + (-1)^{k-1} \int_M \left( [A_{k-1} \contract (\grad \contract B_k)]^\perp, \pseudoscalar \right)\mu \\
+    &=(-1)^{\frac{n(n-1)}{2}} \int_M \proj{}{(\grad \wedge A_{k-1})  B_{k}}\mu + (-1)^{k-1 + \frac{n(n-1)}{2}} \int_M \proj{}{ A_{k-1} (\grad \contract B_k)}\mu\\
+    &=(-1)^{\frac{n(n-1)}{2} + \frac{k(k-1)}{2}} \multivecinnerproduct{\grad \wedge A_{k-1}}{B_k} + (-1)^{\frac{n(n-1)}{2} + \frac{k(k-1)}{2}} \multivecinnerproduct{A_{k-1}}{\grad \contract B_r}.
+\end{align}
+Hence, we have our proof by moving the $\dagger$ to $B_k$.
+\end{proof}
+
+Finally, it is worth noting that from the Green's formula, we get the special case:
+\begin{equation}
+    \label{eq:special_greens_formula}
+\multivecinnerproduct{\grad \wedge A_{k}}{\grad \wedge A_{k}}_M + \multivecinnerproduct{\grad \contract A_{k}}{\grad \contract A_{k}}_M = \multivecinnerproduct{-\grad^2 A_k }{A_k}_M  +  \multivecinnerproduct{\normal \wedge A_k}{\grad \wedge A_k}_\boundary + \multivecinnerproduct{\grad \contract A_k}{\normal \contract A_k}_\boundary.
+\end{equation}
+The fact that $-\grad^2$ is positive definite when $g$ is positive definite is of utmost importance in Hodge theory. 
+\colin{I think this equation basically captures everything about cohomology at once.}
+
+%---------------------------------------------------------------------------------------------------------------------------
+
+%---------------------------------------------------------------------------------------------------------------------------
+\subsection{Currents}
+\label{sec:fields_and_currents}
+%---------------------------------------------------------------------------------------------------------------------------
+
+Currents were introduced by de Rham in \colin{add a citation to the OG de Rham paper} as dual objects to (i.e., functionals on) the space of differential forms. Physically, we should think of currents as a means of measuring fields. Take for instance a smooth field $f\in \G(M)$; there are many questions we can ask about this field, e.g., at any $x\in M$ we can ask for any order derivative of $f$ or point value for $f$. For example, asking for the point value corresponds to the Dirac mass current $\delta_x$ defined by evaluation $\delta_x(f)=f(x)$. We could find the flux of $f$ through some object or the flow of $f$ along another object and in some circumstances these answers are the same. 
+
+Of course, we can string together multiple such measurements together to produce a more involved measurement. The space of measurements far larger than just the space of fields we are measuring. We can see that the currents contain the fields themselves since we imagine we know some field $g$ and use it a means to measure the field $f$. However, the current $\delta_x$ is not a smooth field and this is a valid measurement.
+
+Let us examine the classical examples of flux and circulation. Let $\blade{v}\in \G^1(M)$ be a vector field and $\gamma$ a 1-dimensional piecewise continuous curve, i.e., we have the tangent pseudoscalar $\pseudoscalar_C$ which is a piecwise continuous vector field supported on $\gamma$. The \emph{current of circulation} is
+\begin{equation}
+\label{eq:circulation_current}
+    \mathrm{Circulation}_C(\blade{v}) = \int_C (\blade{E}, \pseudoscalar_\gamma) \mu_\gamma.
+\end{equation}
+The possible corners in $\gamma$ do not factor into the integral since they are a set of measure zero. The current of circulation is maximized when $\blade{v}$ is tangent to $\gamma$ and maintains the same orientation over $\gamma$. That is exactly what this current seeks to measure, after all. For a physicist, this current could be a means to measure work done on a particle that traverses the path $\gamma$ and $\blade{v}$ would represent a force vector field.
+
+If we move up a dimension, we can take $\blade{b}\in \G^2(M)$ and a piecewise continuous surface $S$ with tangent pseudoscalar $\pseudoscalar_S$. The \emph{current of flux} is
+\begin{equation}
+\label{eq:flux_motivation}
+    \mathrm{Flux}_S(\blade{b}) = \int_S (\blade{b},\pseudoscalar_S) \mu_S
+\end{equation}
+This current is again maximal when $\blade{b}$ lies tangent and oriented with $S$. 
+
+A discussion is in order. A physicist likely thinks of flux as the amount of a field that passes through a surface. So what is the deal here? The deal is that our eyes view this problem in 3-dimensions and that we are taught to picture vector fields and not bivector fields. Also, this has never been a problem in 3-dimensions, so why bring it up?
+
+It turns out that every bivector in 3-dimensions is a 2-blade. Hence, every bivector $\blade{b}$ both determines a unique vector $\blade{b}^\perp$ and vice versa. We have never had to work to visualize bivectors because there is no scenario that requires it in 3-dimensions. This is not true in 4-dimensions! At any rate, we can see what a bivector field looks like in 3-dimensions. We visualize it as a plane field like \cref{fig:plane_field} and see its dual field by \cref{fig:vector_field}. 
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/plane_field}
+    \caption{A bivector field corresponding to $\blade{b}=x \blade{E}_{23} + y\blade{E}_{31} + z\blade{E}_{12}$}
+    \label{fig:plane_field}
+\end{subfigure}
+\begin{subfigure}[b]{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/vector_field}
+    \caption{The dual vector field corresponding to $\blade{b}^\perp =x \blade{e}_{1} + y\blade{e}_{2} + z\blade{e}_{3}$}
+    \label{fig:vector_field}
+\end{subfigure}
+\end{figure}
+The color of the planes represents the magnitude of the bivector. If we look at all the planes with the same color, we see that these constitute the area elements of a 2-sphere of a constant radius! This goes to show that while a 2-sphere may not have a nowhere vanishing tangent vector field (Hairy ball theorem), it does have a nowhere vanishing bivector field. This is not exactly surprising since this is really the area element and it is also dual (intrinsically) to the scalar fields on the sphere.
+
+What can we glean from Stokes' theorem? First, if $C$ bounds some surface $S$, then we say $C=\partial S$. Then it must be that
+\begin{equation}
+    \mathrm{Circulation}_{C}(\blade{v}) = \mathrm{Flux}_{S}(\grad \wedge \blade{v}).
+\end{equation}
+But, if $C$ bounds no surface $S$, the above cannot be true! This fact will come back as the notion of a \emph{period} and it is essential in understanding the role of (co)homology will play for us. We could also have supposed that $\blade{b}=\grad \wedge \blade{v}$ from the outright in which we must have
+\begin{equation}
+    \mathrm{Flux}_S (\blade{b})=\mathrm{Circulation}_{\partial S}(\blade{v}).
+\end{equation}
+As you can see, moving from $\grad \wedge$ on a field necessitates we can apply $\partial$ to the region in which we integrate. However, the other way is not true. Not all curves bound a surface.  
+
+A similar argument of course can be done for the divergence theorem. In that case $\grad \wedge \blade{b}$ is a measure of divergence. One will come to the realization that not all surfaces in $\R^3$ bound a volume and so not all divergence free bivector fields are curls of vector fields.
+
+As a last point, in 4-dimensions, e.g., Minkowski space, there are bivectors that are not 2-blades. For instance the the most general bivector
+\begin{equation}
+    F =  E^1 \blade{e}_0 \blade{e}_1 + E^2 \blade{e}_0 \blade{e}_2 + E^3 \blade{e}_0 \blade{e}_3 + B^{3} \blade{e}_1 \blade{e}_2 + B^{2} \blade{e}_3 \blade{e}_1 + B^{1} \blade{e}_2 \blade{e}_3.
+\end{equation}
+cannot in general be written as the exterior product of two vectors. This has immense physical ramifications that we discuss later. \textcolor{red}{A reasonable question would be if a bivector field $\blade{b}$ can be written as a product of two vector fields (even locally) $\blade{v}\wedge \blade{w} = \blade{b}$. Is it true that if $\grad \blade{b}=0$ then this is true? This seems like an integrability condition. It could also be with the helicity $\blade{b} \wedge (\grad \wedge \blade{b})=0$ (or actually $\blade{b} \wedge (\grad \contract \blade{b})$. Non-example would be the standard contact structure. Globally, there would also be issues with spheres, but if we just care about locally then this is fine. It's probably just worth writing this out}
+
+
+\subsubsection{Definitions and Examples}
+Since we have captured differential forms in terms of multivectors, we can also capture \emph{de Rham currents} $\Omega(M)^*$ as functionals on $\G(M)$. Specifically, this is because $\G(M)\cong \Omega(M)$ as $C^\infty$-modules by \cref{eq:musical_iso_generalization}. The space of linear maps $\G(M) \to \R$ which we write as $\G(M)^*$ is thus isomorphic to $\Omega(M)^*$ as modules.
+\begin{definition}
+A \emph{current} is a linear functional $\G(M) \to \R$ and we put $\G^*(M)$ to represent the space of currents. An \emph{$k$-current} is a linear functional $\G^k(M) \to \R$ and we put $\G^{k}(M)^*$ to represent the space of $k$-currents.
+\end{definition}
+By linearity, it follows that
+\begin{equation}
+\G^*(M) = \bigoplus_{k = 1}^n \G^{k*}(M).
+\end{equation}
+\colin{Should probably preface this with the fact that we just want normal currents.\url{https://www.jstor.org/stable/pdf/1970227.pdf}}
+
+Given a $k$-current $B^k \in \G^k(M)^*$ we denote the pairing with a $k$-vector $A_k \in \G^k(M)$ by $B^k(A_k)$. We will use superscripts for currents to distinguish the duality. There are two canonical ways we could define a $k$-current. We will show that, at least up to homology, they are interchangeable.
+
+\begin{enumerate}[i.]
+    \item Given a $k$-vector $B_{k}$ we can define the \emph{current of the $k$-vector field} $B^k\in \G^k(M)^*$ by
+\begin{equation}
+\label{eq:multivector_current}
+    B^k(A_k) \coloneqq \int_M (A_k,B_k) \mu.
+\end{equation}
+
+    \item We can take an continuous $k$-chain $\chain{C}^k$ and note that the \emph{current of the $k$-chain} $C^k \in \G^k(M)^*$ is given by
+\begin{equation}
+\label{eq:chain_current}
+    C^k(A_k) \coloneqq \int_{\mathscr{C}^k} (A_k, \pseudoscalar_{\chain{C}^k}) \mu_{\chain{C}^k}
+\end{equation}
+\end{enumerate}
+Given that $\chain{C}^k$ is continuous, its tangent pseudoscalar $\pseudoscalar_{\chain{C}^k}$ can be thought of as a limit of smooth $k$-blades defined in a neighborhood of $\chain{C}^k$. In this sense, the current of the $k$-chain $C^k$ is really just a current of a $k$-vector $\pseudoscalar_{\chain{C}^k}\in \overline{\G^k(M)}$. 
+
+We mentioned another example of a current of a chain before: take a point $x$, then the 0-current $\delta_x$ is the Dirac mass
+\begin{equation}
+\delta_x[A_0] = A_0(x).
+\end{equation}
+But of course, we may want to measure other parts of a general multivector $A$. For instance, we have the current $\delta_{\blade{E}_\mathcal{I},x}$
+\begin{equation}
+    \delta_{\blade{E}_\mathcal{I},x}(A) = (A(x),\blade{E}_\mathcal{I}) = A^\mathcal{I}(x).
+\end{equation}
+It is possible to define currents that take value in $\G$. This study is fruitful. For example, see \colin{cite my paper}.
+
+\begin{example}[Helicity]
+As a final example, let us consider helicity. Helicity is a measure of the twist of a vector field relative to a corresponding bivector field. In particular, Let $\blade{v}$ be a vector field and $\chain{C}^3$ be a 3-chain, then the \emph{helicity current on $\chain{C}^3$} is
+\begin{equation}
+    \mathrm{Helicity}_{\chain{C}^3}(\blade{v}) = \int_{\chain{C}^3}(\blade{v} \wedge (\grad \wedge \blade{v}), \pseudoscalar_{\chain{C}^3})\mu_{\chain{C}^3}.
+\end{equation}
+This is a wonderful measurement of magnetic fields that measures the intersection of flow lines of the field $\blade{v}$ with the plane $\grad \wedge\blade{v}$ on a 3-dimensional body. Equivalently, it is a linking between integral curves of $\blade{v}$ and integral curves of $(\grad \wedge \blade{v})^\perp$. We can retrieve this as a topological property later.\colin{It would be amazing to show this is computing linking using intersection/alexander duality. The $\perp$ duality should make for nice pictures too. Now, are there more general currents that could correspond to Massey products that may be really really interesting.}
+\end{example}
+
+The point of introducing currents is to bring in the idea of measurements of fields in geometry and topology. It turns out that the space of currents is rather unwieldy. So we will find ourselves reducing to currents built from continuous chains and fields. For a far more in depth journey into currents, please see \cite{giaquinta_cartesian_1998}.
+
+
+%---------------------------------------------------------------------------------------------------------------------------
+\section{Homology and Cohomology}
+\label{sec:homology_and_cohomology}
+%---------------------------------------------------------------------------------------------------------------------------
+
+One reason to care about manifolds $M$ as a whole is to consider physics constrained to geometries beyond $\R^n$. Much of physics cares about the local geometric structure, for example, the flow of electrical current at a point in $M$ depends on the conductivity neighboring that point. Electric current follows the path of least resistance and geometrically this is akin to following local geodesics. In fact, the conductivity matrix is related to a Riemannian metric very explicitly. This idea gave rise to the Calder\'on problem for manifolds and more can be found in \colin{cite uhlmann}.
+
+At a more coarse scale, we know current flows from regions of higher voltage to lower voltage or is induced by a magnetic field, both can be attributed to the Lorentz force. We do not need access to metric information to get the big picture. As it turns out, the topology of the domain is intimately related to the existence of physical phenomena of fields. Hence, topological laws of nature are very qualitative and extremely robust to deformation. This is not only useful for intuitive computation, but it is ripe for pedagogy. Homology and cohomology will prove to be what we want to work with at first.
+
+Think of a physics problem cast as a Partial Differential Equation (PDE). In $\R^3$ one can ask if the PDE for a potential $\grad \wedge \phi = \blade{v}$ is uniquely solvable for the scalar field $\phi$ for any any given vector field $\blade{v}$. A classical fact is that if $\blade{v}$ is curl-free, $\grad \wedge \blade{v}=0$, then $\phi$ exists but is not unique, as $\phi$ is determined up to a constant. The constant $c$, of course, satisfies $\grad \wedge c=0$, hence we can only find an equivalence class of $\phi$ uniquely. Of course, we know $(\grad \wedge)^2  =0$ is inherent to $\grad \wedge$ for any field, but if we change the topology of the underlying space this turns out to not be so easy.
+
+If our space $M$ is not simply connected, then there is a loop in $M$ that cannot be contracted to a point. In that case, we can build a vector field $\blade{v}$ tangent to the loop with $\grad \wedge \blade{v}=0$, but there is no way that $\blade{v}=\grad \wedge \phi$ for any scalar $\phi$. There is no real Escher's staircase after all \colin{cite keenan crane and probably use his picture}! \colin{Okay but you could build a field on the universal cover of the loop and map this down. Since the curve is an image of a Lie group $S^1$, this map from the cover $\R$ to $S^1$ is a homomorphism. Does this do anything for us? Also, this could be sheafy. There would be a multivalued potential. Kotiuga uses this in his book/thesis}
+
+\colin{Terry Tao: de Rham cohomology is a measure of the failure of the fundamental theorem of calculus}
+
+\subsection{Homology}
+\label{subsec:homology}
+
+\subsubsection{Homology Theory}
+ \colin{I can probably shorten this by quite a bit. I'm just not sure what level of expertise we want to assume here.}
+Homology measures the connected components, holes, cavities, and generalizations thereof inside of spaces. Our spaces are manifolds $M$ and are sufficiently nice to think about. Homology is also defined in a handful of ways! 
+\begin{enumerate}
+    \item \emph{Simplicial homology} $H_{k,\Delta}(X)$ is a way to compute homology on simplicial complexes $X$ which are built from simplices. Simplices are, intuitively speaking, a triangular mesh of an $n$-dimensional object. A simplicial chain $C_{k,\Delta}$ is a complex built only out of $k$-dimensional simplices.
+    \item \emph{Singular homology} $H_{k,\textrm{sing}}(X)$ computes homology of $X$ by mapping simplicial $k$-chains into $X$ and we call these maps the \emph{singular $k$-chains} and put $C_{k,\textrm{sing}}(X)$. If $X=M$ is a smooth manifold, then the singular chains are the chains we have previously integrated over.
+    \item \emph{de Rham homology} $H_{k,\textrm{dR}}(X)$ measures the homology of $X$ using $k$-currents.
+\end{enumerate}
+In each theory, we have a map $\partial$ called the \emph{boundary map} that acts on chains $C_k(X)$ by $\partial_k\colon C_k(X) \to C_{k-1}(X)$ and we use the subscript to denote which space $\partial$ is acting on. On simplicial and singular homology, $\partial$ gives you back the boundary you would expect. Chains form a free $R$-module so if $\chain{C}^k, \chain{D}^k \in C_k(X)$ and $r,q\in R$ then $r\chain{C}^k+q\chain{D}^k\in C_k(X)$ and this addition is abelian. By the universal coefficient theorem \cite{hatcher_algebraic_2002} we can always just take $R=\Z$ and tensor with other rings when necessary. For notation, we put $C_k(X;\Z)$ to distinguish the ring of the module. 
+
+\begin{remark}
+We use $X$ in place of $M$ or perhaps the pair $(M,\boundary)$ when a statement is true for either. The pair $(M,\boundary)$ appears in the relative homology and cohomology. 
+\end{remark}
+
+Moreover, we have that $\partial$ is a homomorphism and $\partial^2=0$. Hence, we have a \emph{chain complex} $(\boundary, C_\bullet(X;R))$
+\begin{equation}
+\cdots \to C_{k+1}(X;\Z) \xrightarrow{\partial} C_k(X;\Z) \xrightarrow{\partial} C_{k-1}(X;\Z) \to \cdots.
+\end{equation}
+We define the \emph{$k$-cycles} $Z_k(X;\Z)=\ker \partial_k$ and the \emph{$k$-boundaries} $B_k(X;\Z) = \im \partial_{k+1}$. Since $\partial^2=0$, $B_k(X;\Z)\subset Z_k(X;\Z)$. The purpose of homology is to measure exactly how many kinds of $k$-cycles $Z_k(X;\Z)$ are not $k$-boundaries $B_k$. 
+\begin{definition}
+The $k$th homology of $X$ is the free $\Z$-module
+\begin{equation}
+    H_k(X;R) \coloneqq Z_k(X;\Z)/B_k(X;\Z).
+\end{equation}
+\end{definition}
+Hence elements of $H_k(X;\Z)$ are equivalence classes $[A]$ and $[B]$ of cycles $A$ and $B$ whose difference between them is a boundary: 
+\begin{equation}
+[A]=[B] ~ \iff ~ A=B+\partial C.
+\end{equation}
+
+For topological spaces, the notion of a boundary is well defined and this is what we take as $\partial$. Furthermore, it is a fact that the singular and simplicial homology theories are equivalent (see \cite{hatcher_algebraic_2002}). It would be nice to realize the same is true for the de Rham homology.
+
+\colin{Compact with boundary or mention that currents are compactly supported}
+On currents we build the de Rham homology \cite{iversen_cauchy_1989,lekhyananda_homology_nodate, giaquinta_cartesian_1998} by defining the boundary operator $\partial$ on $k$-currents $B^k \in \G^{k*}(M)$ by passing to the smooth fields in the following way. Let $A_{k-1}\in \G^{k-1}(M)$ be a $(k-1)$-vector field, then
+\begin{equation}
+\partial B^{k}[A_{k-1}] \coloneqq B^{k}[\grad \wedge A_{k-1}].
+\end{equation}
+Since we can always depend on the smoothness of fields that currents are applied to, the boundary map is well defined and it is also clear that $\partial^2 = 0$ from the fact that $(\grad \wedge)^2=0$. We use the same notation for cycles and boundaries but with the added dR tag. That is, we have the \emph{de Rham $k$-cycles} $Z_{k,\mathrm{dR}}(M)$ and the \emph{de Rham $k$-boundaries} $B_{k, \mathrm{dR}}(M)$. The ring in our case is fixed to be the real field $\R$. 
+
+
+\colin{I should probably use mathcal fonts or something since I Have fields $B_k$}
+
+Let us see how this translates to the two canonical examples of currents we mentioned earlier. 
+
+\begin{example}
+\label{ex:boundaries_of_currents}
+\begin{enumerate}[i.]
+    \item Let $B^{k}\in \G^k(M)^*$ be a current of the $k$-vector field $B_{k}$, then 
+\begin{align}
+    \partial B^k[A_{k-1}]&= B^k(\grad \wedge A_{k-1})\\
+    &= \multivecinnerproduct{\grad \wedge A_{k-1}}{B_k}\\
+    &=-\multivecinnerproduct{A_{k-1}}{\grad \contract B_k}_M + \multivecinnerproduct{A_{k-1}}{\normal \contract B_k^\dagger}_\boundary && \textrm{by Green's formula.}
+\end{align}
+We see that we can pass to the interior derivative on the corresponding field, but must account for boundary behavior of $B_k$ as well. In particular, if is true that $\grad \contract B_k = 0$ and $\normal \contract B_k = 0$, then $\partial B^k=0$. \colin{But this is NOT the only way this can be true if the metric has signature!}
+
+\item Let $C^k \in \G^k(M)^*$ be the current of the $k$-chain $\chain{C}^k$ then 
+    \begin{align}
+        \partial C^k (B_k)&= C^k(\grad \wedge A_{k-1})\\
+            &= \int_{\chain{C}^k} (\grad \wedge A_{k-1},\pseudoscalar_{\chain{C}^k})\mu_{\chain{C}^k}\\
+            &= \int_{\partial \chain{C}^k} (A_{k-1},\pseudoscalar_{\partial \chain{C}^k}) \mu__{\partial \chain{C}^k} && \textrm{by Stokes' theorem.}
+    \end{align}
+    Hence, the boundary of the current $\partial C^k$ is the current of the $k-1$-chain $\partial \mathscr{C}^k$.
+\end{enumerate}
+
+Then the \emph{$k^\textrm{th}$ de Rham homology} is vector space of the quotient
+\begin{equation}
+    H_k^{dR}(M) \coloneqq Z_{k,\mathrm{dR}}(M)/B_{k, \mathrm{dR}}(M).
+\end{equation}
+\end{example}
+\colin{These are really normal currents \url{https://www.jstor.org/stable/pdf/1970227.pdf} IS helicity a normal current? Should be if the 3 chain is compact for sure, but we may want non compact helicities?}
+
+\begin{example}[Helicity and Beltrami Fields]
+\label{ex:helicity_and_beltrami}
+Consider the helicity current on some 3-chain $\chain{C}^3$. Recall that this is a 1-current, so its boundary is a 0-current. Given a scalar field $\phi$ we have
+\begin{align}
+    \partial \mathrm{Helicity}_{\chain{C}^3}(\phi) &= \mathrm{Helicity}_{\chain{C}^3}(\grad \wedge \phi)\\
+    &= \int_{\chain{C}^3}([\grad \wedge \phi] \wedge [\grad \wedge \grad \wedge \phi], \pseudoscalar_{\chain{C}^3})\mu_{\chain{C}^3}\\
+    &=0 &&\textrm{since $\grad \wedge^2=0$}.
+\end{align}
+Hence, for any 3-chain, $\mathrm{Helicity}\in Z_{1,\mathrm{dR}}(M;\R)$ (so long as $M$ is at least 3-dimensional that is). \textcolor{red}{It is also confirming the fact that no gradient field has curl by confirming they cant have helical integral curves. It is a valid question to wonder if helicity is a boundary!}
+
+Let us search for what $2$-current helicity would bound. We can call this PreHelicity we define it on a bivector $a_2$ by
+\begin{equation}
+    \mathrm{PreHelicity}_{\chain{C}^3}(a_2) \coloneqq \int_{\chain{C}^3} ([\grad \contract a_2]\wedge a_2, \pseudoscalar_{\chain{C}^3})\mu_{\chain{C}^3}.
+\end{equation}
+Then the boundary is defined on vector fields $\blade{v}$ and
+\begin{align}
+    \partial \mathrm{PreHelicity}_{\chain{C}^3}(\blade{v}) &= \mathrm{PreHelicity}(\grad \wedge \blade{v})\\
+        &= \int_{\chain{C}^3} ([\grad \contract \grad \wedge \blade{v}]\wedge [\grad \wedge \blade{v}],\pseudoscalar_{\chain{C}^3})\mu_{\chain{C}^3}.
+\end{align}
+We see that helicity is not quite a boundary, but if $\blade{v}$ is a \emph{solenoidal Beltrami field}, then $\grad \contract \grad \wedge \blade{v} = -\lambda^2 \blade{v}$ for some $\lambda$. A Beltrami field is a field which align with their own curl or, equivalently, are perpendicular to the plane of rotation so $\blade{v} \contract (\grad \wedge \blade{v})=0$ and solenoidal implies $\grad \contract \blade{v}=0$\colin{So $\blade{v}$ is a 1st homology class and is absolute or relative depending on boundary conditions. This actually becomes a product on homologies now.}. In fact, both these facts imply $\nabla_{\blade{v}}\blade{v}=0$ and $-\grad^2 = \lambda \blade{v}$. \textcolor{red}{So Beltrami fields are autoparallel and their integral curves are locally geodesics on a cylinder and moreover the vector field is a harmonic of the vector laplacian. Of course, this is all intrinsic to $\chain{C}^3$.}
+\end{example}
+
+
+
+\subsubsection{Relative Homology}
+
+On manifolds $M$ with boundary $\boundary$, there is another important homology to discuss. Namely, the \emph{relative homology} $H_k(M,\boundary;\Z)$. We define the \emph{relative $k$-chains} $C_k(M,\boundary;R)$ as a quotient group $C_k(M)/C_k(\boundary)$. Hence, chains in $\boundary$ are trivial in $C_k(M,\boundary)$. The boundary map $\partial \colon C_k(M)\to C_{k-1}(M)$ induces a map on the quotient $\partial \colon C_k(M;\boundary) \to C_{k-1}(M;\boundary)$ and $\partial^2=0$ still holds. The \emph{relative $k$-cycles} $Z_k(M;\boundary)$ are elements in $C_k(M;\boundary)$ that are also in the kernel of $\partial_k$ and the \emph{relative $k$-boundaries} are elements in $C_k(M;\boundary)$ that are in the image of $\partial_{k+1}$.
+
+\begin{definition}
+The \emph{relative $k$th homology group} is the quotient group
+\begin{equation}
+    H_k(M,\partial M;\Z) \coloneqq Z_k(M,\boundary;\Z)/B_k(M;\boundary;\Z).
+\end{equation}
+\end{definition}
+
+Let us think about relative cycles and boundaries intuitively.
+\begin{itemize}
+    \item A relative cycle is an $k$-chain $\chain{C}^k \in C_k(M)$ such that $\partial \chain{C}^k \in C_{k-1}(\boundary)$. That is, the boundary of the relative cycle must lie in the boundary of $M$.
+    \item A relative boundary is an element $\chain{C} = \partial \chain{A} + \chain{B}$ where $\chain{A} \in C_{k+1}(M)$ and $\chain{B} \in C_k(\boundary)$.
+\end{itemize}
+
+This is formalized in the \emph{long exact sequence of relative homology}. First, let us note we have maps
+\[
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBpiBdUkANwEMAbAVxiRGJAF9T1Nd9CKAIzkqtRizYBhAPoBrABQAdJQCMITMFDoAnAJ4BKLjxAZseAkQBMo6vWatEIWYoCyR7r3MCiAZlviDtLyCq6kKuqa2voeJmb8ligALAH2kk4cnqZ8FoIkpEJiaY7sxl4JeSKFdhIlssByALRCnMpqGlq6hmXZ3onINtWB6c4yDc2t7j3xuX4FRbXBbuHtUV2x5bPJ8zVBGVxiMFAA5vBEoABmOhAAtkhkIDgQSCIgDHSqMAwACjk+TgwYBccD0rrcXtQnkgbMMSip8Dg6KDrndEDCoYh-LC2CoAFY3Og4AAWyPBiAArJDnogAGxZMGomlUpAAdl2I3hEERpNRbMe1IAHOy4Up8YSSfSUUgsRikpKyUL+UgAJzy1EywXCnFKNC6PCMHnQ5mIPnFbW6nT6hiGxCvDFM7FOFQWq0HThAA
+\begin{tikzcd}
+0 \arrow[r] & C_k(\boundary) \arrow[r, "\iota"] \arrow[d, "\partial"] & C_k(M) \arrow[r, "\jmath"] \arrow[d, "\partial"] & {C_k(M,\boundary)} \arrow[r] \arrow[d, "\partial"] & 0 \\
+0 \arrow[r] & C_{k-1}(\boundary) \arrow[r, "\iota"]                   & C_{k-1}(M) \arrow[r, "\jmath"]                   & {C_k(M,\boundary)} \arrow[r]                       & 0
+\end{tikzcd}
+\]
+where $\iota$ is the \emph{inclusion map} and $\jmath$ is the \emph{quotient map}. This sequence of spaces is \emph{exact} and hence $\ker \jmath = \im \iota$. From this we get the long exact sequence
+\[
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAJAfQGsAKADoCARhGZgo9AE4BPAJQgAvqXSZc+QinIVqdJq3ZCAxlAg4Ey1djwEiAJh00GLNok5dgPRXwCyCyyAY1hpEAMyOei7s3Pw+pEKi4pKy-iqBajaayAAsEc4GbtyeALTE3gliEtLySmlB6rYoAKx5+q4gxqbmSrowUADm8ESgAGZSEAC2SGQgOBBI2pEFHQJo0nhMtaPjU4iLc0gOS+1C+Dj0XABUWyBjk4c0B4jhx4YCAFYT9DgAFlc3d12LyeuVebiEaykG0YAJ2SFBTxaYJWZwu10UlEUQA
+\begin{tikzcd}
+\cdots \arrow[r, "\partial"] & H_k(\boundary) \arrow[r, "\iota_*"] & H_{k}(M) \arrow[r, "\jmath_*"] & {H_k(M,\boundary)} \arrow[r, "\partial"] & H_{k-1}(\boundary) \arrow[r, "\iota_*"] & \cdots
+\end{tikzcd}
+\]
+and by exactness $\im \iota_* \subset \ker \jmath_*$, $\im \jmath_* \subset \ker \partial$, and $\im \partial \subset \ker \iota_*$.
+
+\begin{itemize}
+    \item The inclusion map $\iota \colon C_k(\boundary) \to C_k(M)$ and its induced map $\iota_* \colon H_k(\boundary) \to H_k(M)$ on homology are clear. Given a chain on the boundary we can always include this as a chain in $M$ as an injection and pass this map to homology.
+    \item The quotient map $\jmath \colon C_k(M) \to C_k(M,\boundary)$ is a bit less obvious. We take a chain on $M$ and map it to its class in the quotient group $C_k(M)/C_k(\boundary)$ as a surjection. That is, for a chain $\chain{C} \in C_k(M)$ we have the equivalence class $\jmath (\chain{C})$ up to some chain in $C_k(\boundary)$
+    \item The boundary map $\partial \colon C_k(M,\boundary) \to C_{k-1}(\boundary)$ maps a relative chain to its boundary since its boundary must be in $C_{k-1}(\boundary)$ by construction. Its induced map $\partial \colon H_k(M) \to H_{k-1}(\boundary)$ extracts the homology class of the boundary of the class in $H_k(M)$.
+\end{itemize}
+
+\begin{theorem}[de Rham's Theorem for Homology]
+The homologies $H_{\bullet,\textrm{sing}}(X;\R)$, and $H_{\bullet,\textrm{dR}}(X)$ are isomorphic.
+\end{theorem}
+
+The proof for the above theorem is involved, but the fact $H_{sing}\cong H_{simp}$ can be found in $\cite{hatcher_algebraic_2002}$ as this is a classical result. Intuitively, a singular chain can be well approximated by a simplicial chain (triangulation). The isomorphism $H_{dR}\cong H_{sing}$ can be found in \cite{giaquinta_cartesian_1998} and, intuitively we can think of taking a continuous chain and integrating along this chain gives us a current. In essence, this is just an application of Stokes' theorem. For the remainder, we solely put $H_k(M)$ and $H_k(M,\boundary)$ when and we may refer to any of the homology theories at will and assume the underlying ring is $\R$. The universal coefficient theorem lets us see that
+\begin{equation}
+    H_{k,dR}(X) \cong H_k(X,\R) \cong H_k(X,\Z) \otimes_{\Z} \R.
+\end{equation}
+This tensor with $\R$ removes torsion in homology and for oriented manifolds it is ineffectual. 
+
+\subsection{Fundamental Classes}
+
+Given a connected oriented $n$-dimensional $M$ there is always a \emph{fundamental class} for the manifold. If $M$ is closed (compact and no boundary) then $H_n(M;R) \cong R$ and the class $[M]$ is a generator of the nontrivial class. Else, if $M$ is compact $H_n(M,\boundary;R) \cong R$ and once again $[M]$ is a generator of the nontrivial class. Namely, we can take the current of the class $[M]$ by
+\begin{equation}
+    [M](A_n) = \int_M (A_n,\pseudoscalar)\mu.
+\end{equation}
+When $M$ has boundary we see
+\begin{equation}
+    [\partial M] (A_{n-1}) = [M](\grad \wedge A_{n-1})
+\end{equation}
+is simply Stokes' theorem. One may notice that the current of the field $\pseudoscalar$ aligns with the fundamental class of $M$. We will revisit this momentarily. Furthermore, the boundary $\partial M$ is a closed manifold and $[\partial M]$ is the fundamental class of $\partial M$. It can be equivalently represented by the field $\pseudoscalar_{\boundary}$ or, by duality, $\normal$. We will revisit this soon as well.
+
+\subsection{Examples}
+
+\subsubsection{Signals}
+
+Quickly, let us work through two one dimensional examples that we will use later on. We will refer to these as \emph{signals} as they will correspond to DC and AC signal manifolds respectively.
+\begin{itemize}
+    \item Let $T=[0,\infty]$ be the compactification of $[0,\infty)$. Hence, open sets in $T$ are given by the total ordering topology (assuming $a \in T$ satisfies $a\leq \infty$) and with this topology, $T$ is compact. Furthermore $\partial T = \{0,\infty\}$ We refer to $T=[0,\infty]$ as the \emph{DC signal}.
+    
+    The homology of $T$ is quite simple. Since $T$ is a single connected component, $H_0(T;R)=R$ and the $H_1(T;R)=0$ since there are no nontrivial closed loops. Actually, $T$ is just homeomorphic to the unit interval $[0,1]$ which is a 1-simplex. We do have that $H_0(T,\partial T;R)=0$ and $H_1(T,\partial T;R)=R$. Lastly $H_0(\partial T;R)=R^2$.
+    
+    \item Let $T=S^1$ be the circle. Note that $\partial T=0$ in this case. We refer to $T=S^1$ as the \emph{AC signal}. We have $H_0(T;R)=R$ and $H_1(T;R)=0$. 
+    
+    \begin{remark}
+    Though $S^1$ is not simply connected due to nontrivial first homology, $\R$ is the simply connected universal covering of $S^1$. This can be realized as a Lie group morphism $\R \to S^1$ by $t \mapsto \exp(ikt)$. The morphisms are indexed by $k\in \Z$ and we note that $\Z$ is the structure space of $S^1$.
+    \end{remark}
+\end{itemize}
+
+\subsubsection{Spherical Cavity}
+
+Let $M$ be the 3-dimensional manifold with boundary given by taking a ball of radius 2 centered at the origin and removing a ball of radius 1 centered at the origin. We refer to $M$ as a \emph{spherical cavity}. This space and its boundary has the following absolute and relative homology given by the long exact sequence:
+\[
+\begin{tikzcd}
+0 \arrow[r]                          & H_3(\partial M)\cong 0 \arrow[r, "\iota^*"]            & H_3(M)\cong 0 \arrow[r, "\jmath^*"]           & {H_3(M,\partial M)\cong R} \arrow[r, "\partial"] & \cdots \\
+\cdots \arrow[r, "\partial"] & H_2(\partial M)\cong R^2 \arrow[r, "\iota^*"] & H_2(M) \cong R \arrow[r, "\jmath^*"] & {H_2(M,\partial M)\cong 0} \arrow[r, "\partial"]          & \cdots \\
+\cdots \arrow[r, "\partial"] & H_1(\partial M)\cong 0 \arrow[r, "\iota^*"]   & H_1(M)\cong 0 \arrow[r, "\jmath^*"]           & {H_1(M,\partial M)\cong R} \arrow[r, "\partial"] & \cdots \\
+\cdots \arrow[r, "\partial"] & H_0(\partial M)\cong R^2 \arrow[r, "\iota^*"] & H_0(M)\cong R \arrow[r, "\jmath^*"]  & {H_0(M,\partial M)\cong 0} \arrow[r, "\partial"]          & 0    
+\end{tikzcd}
+\]
+The nontrivial homologies are given by the following:
+\begin{itemize}
+    \item $H_3(M,\boundary)\cong R$ is the generated by the fundamental class $[M]$ and $H_0(M)$ is the single connected component.
+    \item $H_2(\boundary) \cong R^2$ are generated by the boundary spheres and $H_0(\boundary) \cong R^2$ since it the boundary is two connected components.
+    \item $H_2(M) \cong R$ is generated by a sphere that winds around the inner boundary sphere once and $H_1(M,\boundary)$ is generated by the curve that connects the two boundary spheres.
+\end{itemize}
+A picture assists with seeing these classes.
+\begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+    	\includesvg[width=\textwidth]{../svg/cavity.svg}
+         \caption{The cavity $M$ represents both $H_0(M)$ and $H_3(M,\boundary)$. Each sphere boundary sphere represents both $H_2(\boundary)$ and $H_0(\boundary)$.}
+         \label{fig:cavity}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includesvg[width=\textwidth]{../svg/cavity_homology.svg}
+         \caption{Cavity homology classes $T\in H_2(M)$ and $S\in H_1(M,\boundary)$.}
+         \label{fig:cavity_homology}
+     \end{subfigure}
+\end{figure}
+\colin{I am noticing that homology generators (at least locally) foliate manifolds. Is this somehow tying into distributions?}
+We pair the above by a natural duality known as Poincar\'e--Lefschetz duality which we will mention later. In essence, we need only know half the long exact sequence of relative homology since the other half will be dual. For example, we can extract the following short exact sequences from this long exact sequence
+\[
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAJAfQGYAKALKkAOsLT0ATniYACAQEpRAYwIBzGaIC29HAAsARvuAAlAL4hTpdJlz5CKchWp0mrduQtWQGbHgJEAJicaBhY2RE4uAL5RcSksWQVlNQ1hbT1DE1MAPQDPa187Ih5glzD2bmik4RUwdS0dAyMzfO8bP3tkABZS0LcIj1NnGChVeCJQADMJCE0kMhAcCCRySymZucRHReXEILL+kFE8RlhgWMlpRnM1kGnZpH2lpBKD8KPhfBx6bIAqVvum1ez0QPTe7FEACt0ro-hZKKYgA
+\begin{tikzcd}
+0 \arrow[r] & {H_3(M,\partial M)\cong R} \arrow[r, "\partial"] & H_2(\partial M)\cong R^2 \arrow[r, "\iota^*"] & H_2(M)\cong R \arrow[r, "\jmath^*"] & 0
+\end{tikzcd}
+\]
+\[
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAJAfWIAoBZUgB0haegCc8TAAT8AlCIDGBAObSRAW3o4AFgCM9wAEoBfECdLpMufIRTkK1Ok1bty5yyAzY8BIgCZHGgYWNkROLnJeETFJLBl5JVV1IS1dA2MTAD1-DysfWyIAZiDnUPZuKMShZTA1TW19Q1M8r2tfO2QAFlKQ13D3EycYKBV4IlAAM3EIDSQyEBwIJHILKZm5xAdF5cRAsv6QETxGWGAYiSlGMzWQadmkfaWkEoOwo6F8HHosgCpW+6bV7PRA9N7sEQAKzSOj+5koJiAA
+\begin{tikzcd}
+0 \arrow[r] & {H_1(M,\partial M)\cong \mathbb{R}} \arrow[r, "\partial"] & H_0(\partial M)\cong \mathbb{R}^2 \arrow[r, "\iota^*"] & H_0(M)\cong \mathbb{R} \arrow[r, "\jmath^*"] & 0
+\end{tikzcd}
+\]
+which are dual to one another. 
+
+\colin{I should probably go into the maps $\iota$, $\jmath$, and $\partial$.}
+
+\subsubsection{Solid Torus}
+
+Let $M$ be the 3-dimensional manifold with boundary given by taking a solid torus with inner radius 1 and outer radius 2 centered at the origin. We refer to $M$ as the solid torus. This space and its boundary has the following absolute and relative homology:
+\[
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZAJgBoBGAXVJADcBDAGwFcYkQAJAfWIAoBZAJQACADqiAxgQDmwgAwgAvqXSZc+QigDMFanSat23Pv1Li09AE54mwoeKlhZ4gLb0cACwBGX4ACVFJRUQDGw8AiJyXRoGFjZETh5ecysbRjtBBxkxUTdPH39A5VUwjSIyOT1YwwTuLQFMyWyFYpC1cM1kHUqYg3jE+tMU6yxbeyaneSCS9QiUKJ79OKMueuG0jKzJluDQ2c65UkXq-p2ZjqJDql7lhIcoCBwEVr2LlAAWI6q+9nvH5927TKH2iSxqID+T2mbVKc2Qh2I31uEMkDyhLyBcKiiJu4O45GSogsIzGjUczly7m8vgCAD1iNDXsCSKQcWD+viGlsKXlqYVGZjOjo2ScVgShkTUqN0uNyVMMbDOp8RT87qj-gLFZdSFokeDIQDzsyorrcRyuHJCcSNrLsq4qQUApr9uUdXrzZbbZN7fkaUVAVrtG6zStPWZJSSZWTms63shPqb2ewWnoYFBpPAiKAAGaWCAuJAANhoOAgSAArK1c-mKyWy4gdEm1fgcPRaQAqaHVgsNutIT5NlEAK15Ha7eZ7A9LSAAHCG1XhGLBgOtpf6cxOkAB2PuIMiD8SL5erpjrkDdpBREDTxAATnnKKPMBXEbSZ4viHIh2v9fIV9FC5YEuz4now76bp+5a7uQxYHqIT4vtaa7jjWn5zj+l73nBCGgeBqHkI2N7kAOAGPkBx6vshVYQfuN7fqR4gtm2nbUfhV5EfuDGiExY6sT2MHQTucE8SxwQft+REPuII5UrxYkQeQtG-o2XEyZ4ckbvhQlEehqmjixlCKEAA
+\begin{tikzcd}
+0 \arrow[r]                          & H_3(\partial M)\cong 0 \arrow[r, "\iota^*"]            & H_3(M)\cong 0 \arrow[r, "\jmath^*"]          & {H_3(M,\partial M)\cong R} \arrow[r, "\partial"]          & \cdots \\
+\cdots \arrow[r, "\partial"] & H_2(\partial M)\cong R \arrow[r, "\iota^*"]   & H_2(M) \cong 0 \arrow[r, "\jmath^*"]         & {H_2(M,\partial M)\cong R} \arrow[r, "\partial"] & \cdots \\
+\cdots \arrow[r, "\partial"] & H_1(\partial M)\cong R^2 \arrow[r, "\iota^*"] & H_1(M)\cong R \arrow[r, "\jmath^*"] & {H_1(M,\partial M)\cong 0} \arrow[r, "\partial"]          & \cdots \\
+\cdots \arrow[r, "\partial"] & H_0(\partial M)\cong R \arrow[r, "\iota^*"]   & H_0(M)\cong R \arrow[r, "\jmath^*"] & {H_0(M,\partial M)\cong 0} \arrow[r, "\partial"]          & 0     
+\end{tikzcd}
+\]
+The nontrivial homologies are given by the following:
+\begin{itemize}
+    \item $H_3(M,\boundary)\cong R$ is the generated by the fundamental class $[M]$ and $H_0(M)$ is the single connected component.
+    \item $H_1(\boundary) \cong R^2$ are generated by the two circle factors of since $\boundary \cong S^1 \times S^1$. One circle is meriodional and the other is a band around the body of the torus.
+    \item $H_2(M,\boundary)$ is generated by a slice of the torus and the boundary of this class gives the band around the body of the torus. $H_1(M)$ is generated by the circle curve that $M$ retracts onto.
+    \item $H_2(\boundary) \cong R$ is generated by $[\partial M]$ as it encloses a volume and $H_0(\boundary)\cong R$ is the single connected component.
+\end{itemize}
+A picture assists with seeing these classes.
+\begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+    	\includesvg[width=\textwidth]{svg/torus.svg}
+         \caption{The solid torus $M$ represents both $H_0(M)$ and $H_3(M,\boundary)$. The boundary is $S^1 \times S^1$ and has $H_1(\boundary)\cong R^2$ generated by the inner meridional  circle and the band that winds around.}
+         \label{fig:cavity}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includesvg[width=\textwidth]{svg/torus_homology.svg}
+         \caption{Solid torus homology classes $T\in H_1(M)$ and $S\in H_2(M,\boundary)$.}
+         \label{fig:cavity_homology}
+     \end{subfigure}
+\end{figure}
+Again, we wrote out the classes that are listed in the same bullet point are inherently dual to one another. The illustrations may help elucidate this fact.
+
+
+
+\subsection{Cohomology}
+
+Given a homology theory on a space $X$, we have a dual theory of \emph{cohomology}. Wonderfully, cohomology will add structure that homology did not have. Namely, we will get a product on cohomology called the \emph{cup product}. 
+
+We begin with the elements $a_k \in C^k(X)$ which we refer to as \emph{$k$-cochains}. A cochain is a ring homomorphism $a_k \colon C_k(X;R) \to R$. A universal coefficient theorem lets us stick with the ring $\Z$. By dualizing homology, we get a \emph{coboundary map} $\delta \colon C^k(X;\Z) \to C^{k+1}(X;\Z)$. This yields a \emph{cochain complex}
+\begin{equation}
+\cdots \xleftarrow{} C^{k+1}(X;\Z) \xleftarrow{\delta} C^k(X;\Z) \xleftarrow{\delta} C_{k-1}(X;\Z) \xleftarrow{} \cdots.
+\end{equation}
+Elements of $\ker \delta$ are \emph{cocycles} and we put $Z^k(X;\Z)$ to denote them and elements of $\im \delta$ are \emph{coboundaries} and we put $B^k(X;\Z)$ to denote them. Cohomology seeks to measure the extent that cocycles fail to be coboundaries.
+\begin{definition}
+The $k$th cohomology is the quotient $\Z$-module
+\begin{equation}
+    H^k(X;\Z) \coloneqq Z^k(X;\Z)/B^k(X;\Z).
+\end{equation}
+\end{definition}
+For each of the homology theories there is a corresponding cohomology theory.
+\begin{enumerate}
+    \item \emph{Simplicial cohomology} $H^{k,\Delta}(X)$ is a way to compute cohomology of cochains which are functions on simplicial complexes $X$. 
+    \item \emph{Singular cohomology} $H^{k,\textrm{sing}}(X)$ computes cohomology of $X$ by taking cochains defined on the singular chains.
+    \item \emph{de Rham cohomology} $H^{k,\textrm{dR}}(X)$ measures the cohomology of $X$ using $k$-forms and the exterior derivative $d$ or, equivalently, $k$-vectors and the grade raising $\grad \wedge$.
+\end{enumerate}
+
+\subsection{de Rham Cohomology}
+
+We will define our de Rham cohomology on multivector fields as opposed to differential forms. The only difference is cosmetic as we replace $d$ with the $\grad \wedge$. The map $\grad \wedge \colon \G^k(M) \to \G^{k+1}(M)$ increases grade and $\grad \wedge ^2=0$ which gives us a cochain complex. In this regime, we may call elements in the $\im \grad\wedge_{k-1} = B^{k,dR}(M)$ forms the space of coboundaries, or \emph{exact} fields, and $\ker \grad\wedge_{k} = Z^{k,dR}(M)$ forms the space of cocycles, or \emph{closed} fields (see \cite{schwarz_hodge_1995} for more). 
+\begin{equation}
+H^k_{dR}(M) \coloneqq Z^{k,dR}(M)/B^{k,dR}(M)
+\end{equation}
+which we call the $k^{th}$-\emph{de Rham cohomology module}. In $H^k_{dR}(M)$ are equivalence classes of fields where we say that the class $[A]$ and class $[B]$ are equivalent if they differ by a coboundary, that is, the difference between the fields themselves is exact
+\begin{equation}
+[a]=[b] ~ \iff ~ a=b+\grad \wedge c.
+\end{equation}
+
+
+\subsection{Relative de Rham Cohomology}
+
+Relative cohomology as defined to be dual to the relative homology, so we will concentrate on the relative de Rham cohomology. This is actually quite nice to work with as it ends up being fairly intuitive. The \emph{relative cocycles} are
+\begin{equation}
+    Z^{k,dR}(M,\boundary) \coloneqq \{ a_k \in Z^{k,dR}(M) ~\vert ~ \normal \wedge a_k =0\}
+\end{equation}
+and the \emph{relative coboundaries} are
+\begin{equation}
+    B^{k,dR}(M,\boundary) \coloneqq \{ a_k = \grad \wedge b_{k-1} \in B^{k,dR}(M) ~\vert ~ \normal \wedge b_{k-1} =0, ~\textrm{or $a_k=0$ if $k=0$}\}.
+\end{equation}
+Hence, the \emph{relative de Rham cohomology} is
+\begin{equation}
+    H^{k,dR}(M,\boundary) \cong Z^{k,dR}(M,\boundary)/B^{k,dR}(M,\boundary).
+\end{equation}
+\colin{We are taking a cup product to define relative cohomology actually}
+A relative cocycle is a field in the kernel of $\grad \wedge$ that is normal to the boundary and a relative coboundary is a field in the image of $\grad \wedge$ whose primitive is normal to the boundary. 
+
+\subsection{Interior Derivative}
+
+Since $\grad \contract ^2=0$ we could consider building a chain complex with this operator. However, if we have a cocycle $a_k \in Z^{k, dR}(M,M)$ so $\grad \wedge a_k =0$ then 
+\begin{align}
+    0 &= (\grad \wedge a_k)^\perp\\
+      &= \grad \contract a_k^\perp,
+\end{align}
+and hence a field in $\ker \grad \contract$ (which we call \emph{coclosed}) is dual to a cocycle. Hence, every cocycle $a_k$ corresponds directly to an coclosed field $a_k^\perp$. In the same vein, if we have a relative cocycle $b_k\in Z^{k, dR}(M,\boundary)$ then $b_k^\perp$ satisfies $\grad \contract b_k^\perp =0$ and similarly since $\normal \wedge b_k = 0$ it must be that $\normal \contract b_k^\perp = 0$. 
+
+\begin{remark}
+\label{rem:absolute_conditions}
+It turns out if we build $H^{k,dR}(M)$ with the operator $\grad \contract$ and with fields $a_k$ such that $\normal \contract a_k = 0$ we get the same cohomology theory. This is quite clear by citing Green's formula and looking at the currents of $k$-vectors in \cref{ex:boundaries_of_currents}. We will see this used in \cref{ex:cap_product}.
+\end{remark}
+
+Based on \cref{rem:absolute_conditions}, we can see the following must be true.
+\begin{theorem}[Hodge Duality Isomorphism]
+The dual map $\perp \colon H^{k,dR}(M) \to H^{n-k, dR}(M,\partial M)$ is an isomorphism.
+\end{theorem}
+The proof is the argument made earlier.
+
+
+
+\subsection{Equivalence of Cohomology Theories}
+
+\begin{theorem}[de Rham's Theorem for Cohomology]
+On manifolds $H^{\bullet,\textrm{sing}}(X;\R)$ and $H^{\bullet,\textrm{dR}}(X)$ are isomorphic and hence $H_{k}(X;\R)$, $H^{k}(X;\R)$ are isomorphic.
+\end{theorem}
+
+Since $H^{k,\textrm{sing}}(X;\R) \cong H^{k,\Delta}(X)$ holds as well, we can drop the distinction of which cohomology theory we are working with as well and just put $H^k(X)$ and assume the base ring is $\R$ unless otherwise stated. Hence, we can just default to which ever suits our current needs. We also have the following.
+
+This is due to the fact that when we define cohomology over a field, $H_k(X)$ is a vector space and its dual is canonically isomorphic in finite dimensions. Our examples from before then allow us to know the cohomology for free, so there is no need to repeat the argument.
+
+\subsubsection{Ring Structure}
+
+As stated before cohomology forms a ring. Given a $k$-cochain $a_k\in C^k(X;\Z)$ and an $\ell$-cochain $b_\ell \in C^\ell(X;\Z)$ we have the \emph{cup product} $a_k \smile b_\ell \in C^\ell(X;\Z)$. For us, this is most easy to see in terms of multivector fields. If $a_k\in \G^k(M)$ and $b_\ell \in \G^\ell(M)$ then $a_k \smile b_\ell = a_k \wedge b_\ell \in G^{k+\ell}(M)$. This descends to a product on homology since 
+\begin{align}
+\grad \wedge (a_k \wedge b_\ell) = (\grad \wedge a_k) \wedge b_\ell + (-1)^k a_k \wedge (\grad \wedge b_\ell) = 0.
+\end{align}
+Hence homology is a ring
+\begin{equation}
+H^\bullet (M) \coloneqq \bigwedge_{k \in \mathbb{N}} H^k(M)
+\end{equation}
+and this is true for the relative cohomology as well. This ring structure will be immensely useful.
+
+
+\section{Integration, Products, Dualities, and Hodge Theory}
+
+We have already argued that for manifolds the are a handful of notions of homology and cohomology are equivalent and henceforth will drop any reference to a specific theory and just use those that are most helpful or intuitive in any given instant. 
+
+\subsection{Integration and Periods}
+\colin{Probably need to rethink notation used for all of these pairings. This could go earlier when we define integration.}
+The fundamental tool to link together homology and cohomology is integration. Think of integration as a linear map
+\begin{equation}
+    \int \colon C_k(X) \times C^k(X) \to \R
+\end{equation}
+where, again, $X=M$ or the relative pair $(M,\boundary)$. For example, take $\chain{A}^k \in C_k(M)$ a continuous $k$-chain and $a_k\in C^k(M)$ a smooth $k$-vector field, then we put
+\begin{equation}
+    \int (\chain{C}^k,a_k) = \int_{\chain{C}^k} (a_k,\pseudoscalar_{\chain{C}^k}) \mu_{\chain{C}^k}.
+\end{equation}
+In this notation, we have Stokes' theorem
+\begin{equation}
+    \int (\partial \chain{C}^k,a_{k-1}) = \int (\chain{C}^k, \grad \wedge a_k)
+\end{equation}
+and we see that $\partial$ is formally adjoint to $\grad \wedge$ in this pairing. The amazing fact really is that $\grad \wedge$ (or $d$ on forms) built from physical intuition happens to align perfectly with the intuitive notion of a boundary. 
+
+From the we see that a current of a $k$-chain $\chain{A}^k$ is simply built by $\int(\chain{A}^k,-)\colon C^k(X) \to \R$ since
+\begin{equation}
+    \int (\chain{A}^k,-) = \int_{\chain{A}^k} (-, \pseudoscalar_{\chain{A}^k}) \mu_{\chain{A}^k}.
+\end{equation}
+
+\begin{theorem}
+Integration is non-degenerate and invariant over both relative and absolute homology and cohomology classes.
+\end{theorem}
+\begin{proof}
+The fact that integration is non-degenerate is equivalent to the proof of de Rham's theorem that we have already stated so we will not prove this here. To prove invariance, we will use Stokes' theorem. Let $\chain{A}^k + \partial \chain{B}^k$ be a representative of a homology class and let $a_k + \grad \wedge b_k$ be a representative of a cohomology class. Then,
+\begin{align}
+    \int (\chain{A}^k + \partial \chain{B}^k, a_k + \grad \wedge b_k) &= \int (\chain{A}^k,a_k) + \int (\chain{A}^k,\grad \wedge b_k) +\int(\partial \chain{B}^k, a_k) + \int(\partial \chain{B}^k, \grad \wedge b_k)\\
+    &= \int(\chain{A}^k,a_k).
+\end{align}
+\end{proof}
+\colin{Okay... surely this is only true when we take non-light like chains. Everything else is fine. Theorem 23 and 24 from Chisholm}
+
+The above work motivates the following definition. \colin{Just give a basis for each and then write the periods. Also mention that if we want to use potentials we need to move to a space that kills off that homology. This also gives a reason to think of chains and homology.}
+\begin{definition}
+Let $a_i^k \in Z_k(X)$ be cycles such that $[a_i^k]$ basis for homology $H_k(X)$ and let $a_k^j \in Z^k(X)$ be such that $[a_k^j]$ is a basis for cohomology $H^k(X)$. Then the numbers
+\begin{equation}
+    p_i^j \coloneqq \int (a_i^k,a_k^j)
+\end{equation}
+are called \emph{periods}. 
+\end{definition}
+
+Given a basis for both homology and cohomology, the structure of the periods can tell us a bit about potentials.
+\begin{proposition}
+\label{prop:periods}
+    Fix a field $a_k$ and a basis $[a_i^k]$ of $H_k(X)$, then if the periods 
+    \begin{equation}
+        p_i = \int (a_i^k,a_k)
+    \end{equation}
+    vanish for all $i$, then $a_k$ is a $k$-coboundary $a_k \in B^k(X)$.
+\end{proposition}
+How exactly should we think of this? In some sense, it seems that the Betti numbers of the manifold have an immediate impact on the solvability of the potential problem. If all $p_i$ vanish for $a_k$ then $a_k$ has a \emph{potential} $\phi_{k-1}$ such that
+\begin{equation}
+    a_k = \grad \wedge \phi_{k-1}.
+\end{equation}
+Whether $\phi_{k-1}$ is an absolute or relative cycle depends on whether $X=M$ or $X=(M,\boundary)$.
+
+We can see that the topology of the domain is intimately connected with solutions to certain partial differential equations. In the case that we are looking at locally star shaped regions a cocycle is a coboundary \cite[Proposition 5]{giaquinta_cartesian_1998}. Equivalently, homology rank seems to mark the failure of the fundamental theorem of calculus \colin{Tau says this}. 
+
+\subsection{Cap Product}
+
+Integration does not just give us a way to pair like-graded objects, there is also the cap product $\frown$ which is a map $\frown \colon H^\ell(X) \times H_k(X) \to H_{k-\ell}(X)$. To define the the cap product, let $a^\ell \in H_\ell(X)$ and $a_k \in H^k(X)$. The way we view homology is captured most broadly by currents. 
+
+\begin{example}
+\label{ex:cap_product}
+\begin{enumerate}[i.]
+    \item If $a^k$ is the current of the $k$-chain $\chain{A}^k$ then we have
+    \begin{equation}
+        a^\ell \frown a_k = \int_{\chain{A}^k}(-,a_\ell \contract \pseudoscalar_{\chain{A}^k})\mu_{\chain{A}^k} = \multivecinnerproduct{-}{a_\ell \contract \pseudoscalar_{\chain{A}^k}}.
+    \end{equation}
+    We can see this is indeed a $k-\ell$-current and to see it is a cycle we can take $b_{k-\ell-1}$ and
+    \begin{align}
+        \partial (a^\ell \frown a_k)(b_{k-\ell-1}) &= (a^\ell \frown a_k)(\grad \wedge b_{k-\ell-1})\\
+        &= \multivecinnerproduct{\grad \wedge b_{k-\ell-1}}{a_\ell \contract \pseudoscalar_{\chain{A}^k}}_{\chain{A}^k}\\
+        &=0 
+    \end{align}
+    where the last equality uses Green's formula and the fact that $\grad \contract (a_\ell \contract \pseudoscalar_{\chain{A}^k})=(\grad \wedge a_\ell) \contract \pseudoscalar_{\chain{A}^k}=0$ since $a_\ell$ is a cocycle.
+    
+    \item If $a^k$ is the current of a $k$-vector field $a_k$ then we have
+        \begin{equation}
+        a^\ell \frown a_k = \int_{M}(-,a_\ell \contract a_k)\mu = \multivecinnerproduct{-}{a_\ell \contract a_k}.
+    \end{equation}
+    By \cref{ex:boundaries_of_currents} and \cref{rem:absolute_conditions}, it must be that $\grad \contract a_k = 0$ and $\normal \contract a_k = 0$ (which really follows from Green's formula). Hence, we see the cap product is a $k-\ell$-cycle since
+    \begin{align}
+        \partial (a^\ell \frown a_k)(b_{k-\ell-1}) &= (a^\ell \frown a_k)(\grad \wedge b_{k-\ell-1})\\
+        &= \multivecinnerproduct{\grad \wedge b_{k-\ell-1}}{a_\ell \contract a_k}\\
+        &= \multivecinnerproduct{b_{k-\ell-1}}{\grad \contract (a_\ell \contract a_k)} + \multivecinnerproduct{b_{k-\ell-1}}{\normal \contract (a_\ell \contract a_k)}_\boundary\\
+        &=0 
+    \end{align}
+    since $\normal \contract a_\ell =0$ and
+    \begin{equation}
+        \grad \contract (a_\ell \contract a_k) = (\grad \wedge a_\ell)\contract a_k + (-1)^\ell a_\ell \contract (\grad \contract a_k)^\perp.
+    \end{equation}
+\end{enumerate}
+\end{example}
+\colin{This above seems to show that at least locally a closed $k$-vector field corresponds to some integrable $k$-chain.}
+\begin{remark}
+Currents of $k$-vectors inherently capture de Rham's theorem since a $k$-current in $H_k(M)$ corresponds to some $k$-vector $a_k$ satisfying $\grad \contract a_k=0$ with the absolute condition $\normal \contract a_k=0$.
+\end{remark}
+Using de Rham's theorem we have the following.
+\begin{proposition}
+The left contraction is a product on cohomology $\contract \colon H^\ell(X)\times H^k(X) \to H^{k-\ell}(X)$.
+\end{proposition}
+\begin{proof}
+The proof essentially follows the argument from (ii) in \cref{ex:cap_product} and can be seen as the Hodge dual to the cup product. Namely, take $a_\ell \in H^{\ell}(X)$ and $a_k \in H^k(X)$ then
+\begin{equation}
+    \grad \contract (a_\ell \contract a_k) = \left[ \grad \wedge (a_\ell \contract a_k)^\perp \right]^\perp = \left[ \grad \wedge (a_\ell \wedge a_k^\perp) \right]^\perp.
+\end{equation}
+\end{proof}
+
+
+
+\subsection{Poincar\'e -- Lefschetz Duality}
+
+Previously we alluded to a notion of duality between certain There is a duality between homology and cohomology classes besides the one guaranteed by de Rham's theorem. 
+\begin{theorem}[Poincar\'e--Lefschetz Duality]
+Suppose that $M$ is a compact orientable manifold, then the spaces $H_k(M)$ and $H^{n-k}(M,\partial)$ are isomorphic with the isomorphism given by the cap product with the fundamental class $[M]$.
+\end{theorem}
+\begin{proof}
+Illustrating the action of the cap product is useful, but otherwise a full proof is given in \cite{hatcher_algebraic_2002}. Let $a_{n-k} \in H^{n-k}(M,\partial)$ then
+\begin{align}
+    [M]\frown a_{n-k} = \multivecinnerproduct{-}{a_{n-k}^\perp}
+\end{align}
+and an application of Green's formula will show that $\grad \wedge a_{n-k}=0$ and $\normal \wedge a_{n-k}=0$ implies that $[M]\frown a_{n-k}$ is a cycle.
+\end{proof}
+
+\begin{remark}
+The fact that this holds due only to orientability again shows that we really only need a volume form.
+\end{remark}
+
+
+\subsubsection{Hodge Theory}
+
+\colin{Shorten this or honestly just take it out of here}
+
+The study of fields leads us directly to Hodge theory which, more or less, uses analysis as a link to topology. Our notion of de Rham cohomology was built upon this. We took the cochain complex
+\begin{equation}
+\cdots \to \G^{k-1}(M) \xrightarrow{\grad \wedge_{k-1}} \G^k(M) \xrightarrow{\grad \wedge_{k}} \G^{k+1}(M) \to \cdots
+\end{equation}
+and defined the de Rham cohomology as $H^k_{\mathrm{dR}}(M)$ as the quotient $H^k_{\mathrm{dR}}(M) = \ker \grad \wedge_k ~ / ~ \im \grad \wedge_{k-1}$. But there exists a dual chain complex with the dual boundary map $\grad \contract$ given by
+\begin{equation}
+\cdots \to \G^{k-1}(M) \xleftarrow{\grad \contract_{k}} \G^k(M) \xleftarrow{\grad \contract_{k+1}} \G^{k+1}(M) \to \cdots
+\end{equation}
+\colin{In Schwarz they call this a cohomology}
+If we take $H_k(M,\grad \contract)\coloneqq \ker \grad \contract_k ~ / ~ \im \grad \contract_{k+1}$, then we may ask about what relationships there between the above chain and cochain complex? Similarly, Hodge theory asks about the field structure of fields in homology classes that become most interesting in the case of manifolds with nonempty boundary. In that realm, we can solve elliptic boundary value problems which, perhaps unsurprisingly, are tied to topology.
+
+\noindent \textbf{Monogenic Fields}
+
+Given $M$ is a manifold with nonempty boundary $\partial M$, we can attempt to solve the following elliptic \colin{$\Delta$ isn't always elliptic, for example in spacetime} boundary value problem for a $k$-vector field. Let $\varphi \in \G(\partial M)$ then we wish to find $A \in \G(M)$ satisfying
+\begin{equation}
+    \label{eq:dirichlet_problem}
+    \begin{cases}
+    \Delta A = 0 & \textrm{in $\mathrm{int} M$}\\
+    A\vert_{\partial M} = \varphi.
+    \end{cases}
+\end{equation}
+In this case, we call $A$ \emph{harmonic} with boundary value $\varphi$ and $A$ exists uniquely for any $\varphi$ (see \cite[Theorem 3.4.6]{schwarz_hodge_1995} for a proof). In the case of electromagnetism, a harmonic $A_0 \in \G^0(M)$ corresponds to a vacuum solution for the scalar potential. To include source charges, we no longer solve a homogeneous expression (\emph{Laplace's equation} $\Delta A_0 = 0$) and would instead require $\Delta A_0 = \rho$ where $\rho$ is a distribution of charge. This inhomogeneous equation is often referred to as the \emph{Poisson equation}. In order to solve this problem, we must consider two boundary conditions. We have:
+\begin{enumerate}[1.]
+    \item the Dirichlet condition $\projection_{\pseudoscalar_{\partial}}(A)=0$. Also called the \emph{relative boundary conditions}.
+    \item the Neumann condition $\projection_{\pseudoscalar_\partial}(A^\perp)=0$. Also called the \emph{absolute boundary conditions}.
+\end{enumerate}
+As a reminder, the map $\projection_{\pseudoscalar_\partial}$ acts as pointwise projection onto the tangent space to the boundary. In this sense, the Dirichlet condition forces the tangential component of the multivector field $A$ to vanish. The Neumann condition on $A$ is requires that $A$ has no components normal to the boundary\colin{I need to work out what this means on here}. These could, if need be, be imposed on $\grad \wedge A$ or $\grad \contract A$ as well. \cite[Proposition 1.2.6]{schwarz_hodge_1995} may be of insight.
+
+Exploring solutions to the Poisson equation leads us to sub-problems. Recall that $\Delta = \grad^2$, then it may be just as illuminating to consider first order equations in terms of the Dirac operator $\grad$. The homogeneous equations turn out to carry a wealth of information with them.
+\begin{definition}
+Let $A \in \G(M)$, then we say $A$ is a \emph{monogenic} if $\grad A = 0$. We put $\monogenics(M)$ as the \emph{space of monogenic fields}.
+\end{definition}
+In the realm of Hodge theory, $k$-forms fields $\alpha_k \in \Omega^k(M)$ are called to be \emph{harmonic fields} if $(d+\delta)\alpha_k = 0$. The space of monogenic $k$-vector fields $\monogenics^k(M)$ is isomorphic to the space of $k$-forms that are harmonic fields. 
+
+\begin{remark}
+For $A_+\in \G^+(M)$ a spinor field, the equation $\grad A_+ = 0$ becomes a key point of study in Clifford analysis. The reason why is due to the grade mixing property of grad. For instance, if $M$ is dimension 2 and $g$ is positive definite, then if $A_+=A_0+A_2$ and $\grad A_+=0$ we have the Cauchy--Riemann equations
+\begin{equation}
+    \grad \wedge A_0 = \grad \contract A_2
+\end{equation}
+and $A_+$ is equivalent to a complex holomorphic function.
+\end{remark}
+
+\begin{definition}
+The \emph{monogenic Dirichlet $k$-vector fields} are monogenic $k$-vector fields satisfying the Dirichlet condition
+\begin{equation}
+\monogenics_D^k(M) \coloneqq \{ A_k \in \G^k(M) ~\vert~ \grad A_k = 0, ~ \projection_{\pseudoscalar_{\partial}}(A)=0\}
+\end{equation}
+and the \emph{monogenic Neumann $k$-vector fields} are monogenic $k$-vector fields satisfying the Neumann condition
+\begin{equation}
+\monogenics_N^k(M) \coloneqq \{ A_k \in \G^k(M) ~\vert~ \grad A_k = 0, ~\projection_{\pseudoscalar_\partial}(A^\perp)=0 \}.
+\end{equation}
+\end{definition}
+
+\subsubsection{Hodge Isomorphism and Hodge Duality}
+
+This detour was taken to let us reach the following theorem.
+
+\begin{theorem}[Hodge Isomorphisms]
+When $g$ is definite (i.e., for Riemann manifolds) we have that $H^k(M) \cong \monogenics^k_N(M)$ and $H_k(M;\grad \contract) \cong \monogenics^k_D(M)$. Moreover $\monogenics^k_D(M) \cong H^k(M,\partial M)$.
+\end{theorem}
+For proof, see \cite[Theorem 2.6.1 and Corollary 2.6.2]{schwarz_hodge_1995}.
+
+\begin{proposition}[Hodge Duality]
+The (Hodge) dual $\perp$ is an isomorphism between $\monogenics^k_N(M)$ and $\monogenics^{n-k}_D(M)$. 
+\end{proposition}
+\begin{proof}
+Let $A_k \in \monogenics^k_N(M)$ then $\grad A_k = 0$ and $\projection_{\pseudoscalar_\partial}(A_k^\perp)=0$. Applying $\perp$ we see
+\begin{align}
+    \grad A_k^\perp &= \grad \contract A_k^\perp + \grad \wedge A_k^\perp\\
+        &= (\grad \wedge A_k)^\perp + (\grad \contract A_k)^\perp\\
+        &=0
+\end{align}
+and similarly $\projection_{\pseudoscalar_\partial}(A_k^\perp)=0$ implies that the field $A_k^\perp$ satisfies the Dirichlet condition and hence $A_k^\perp \in \monogenics^{n-k}_D(M)$. 
+\end{proof}
+
+Moreover, using the Hodge isomorphisms (Hodge), the Hodge duality isomorphism ($\perp$), and the Poincar\'e-Lefschsetz (PL) duality isomorphism we have the following equivalences in the commutative diagram:
+\[
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZAJgBoAGAXVJADcBDAGwFcYkQAdDgW3pwAsAxk2ABZAL4A9ANYB9AHIAKUQEoQ40uky58hFAFYK1Ok1bsuvAcMZipwMAFpp42QBFlajVux4CRcqQAjMYMLGyIIAASMsoA3FwARhCMUHAAntxJNlxg9AmM9OIABFwA7jBQAOYwnpogGD66RADsQSGm4VGS9k7icYnJqRlZwDl5BeJcjABOghDTYDDTtd46fihkxO1h7NHScQBKK-XavnrIhls0oWYR0T3OyqRcaPTTeExForFFR+p1DTW5zIABZtrcorIHn1RKQShxXu8sJ9vn8vCdGusLqQwdcOrtZPtYWjjBVqggUKAAGbTCDcJAgmg4CBIVomHaIMDMRiMGgFBIwRgABVOTQijBgVJwID5WEW7Cg9Dg-Aq-2ptPpiEZIGZSAAbHiOZwODgYAAPHDTbjAIUAGXEMpA-MFIsxehAcuwsDVIBpdIZTJZiAC7IhXFNFqtwEFjCwaDwggdfLyLtF6w9YC9bFl8oiUAgOFNUB9fs12t1iDIoc6ByKAF54ZZ+AkEsADhp4RHLdaoLWACoq+YwbhJp0p4Vp92erDenOdRXK1Xo0tIQw6oNsm6dcPm7s2+2O50Tt3safe5ca1eBpCBQ1hk27qMxuMJ0dH11A0+ZmfZp1y+cFkWJaXoga4VgAzHeNb1o2fDNq27ZwjukY9v2g7TMOb7jh+Zxflmh7-gqSoqsWF7+ogBrrle1bmA+KHAAAJAcDFFPQRRUlggpQFhArHp+ERnr+sa5iAC4kcB5EhhWt5-iJ+bMPkv4qvQxactyvI6vQWCMOwkDylBtFdlGkTQNUHYvEsaCHthk54T+EllteoFzgqEAKRKjrKapXI8kyWk6REem-luhmPtaJlVDA5kIpZ1m8ThYoZvh4iUOIQA
+\begin{tikzcd}
+                                  &  & \mathcal{M}^k_N(M) \arrow[rrr, leftrightarrow, "{\textrm{Hodge}, \perp}" description, dashed]                                                                                                                                                                                &  &  & \mathcal{M}^{n-k}_D(M)                                                                                                                                                                        &  &                                         \\
+H^k(M;\boldsymbol{\nabla} \wedge) &  &                                                                                                                                                                                                                                                                  &  &  &                                                                                                                                                                                               &  & H^{n-k}(M;\boldsymbol{\nabla}\lrcorner) \\
+                                  &  & H^k(M;R) \arrow[rrrdd, leftrightarrow, dashed] \arrow[dd, leftrightarrow, "\textrm{PL}" description] \arrow[uu, leftrightarrow, "\textrm{elliptic}" description, dotted] \arrow[llu, leftrightarrow, "{R = \mathbb{R}, \textrm{dR Theorem}}" description, dashed] \arrow[rrr, leftrightarrow, "{\textrm{Hodge}, \perp}" description,  dashed] &  &  & {H^{n-k}(M,\partial M; R)} \arrow[dd, leftrightarrow, "\textrm{PL}" description] \arrow[uu, leftrightarrow, "\textrm{elliptic}" description, dotted] \arrow[rru, leftrightarrow, "{R = \mathbb{R}, \textrm{dR Theorem}}" description, dashed] &  &                                         \\
+                                  &  &                                                                                                                                                                                                                                                                  &  &  &                                                                                                                                                                                               &  &                                         \\
+                                  &  & {H_{n-k}(M, \partial M;R)} \arrow[rrruu, leftrightarrow, "\textrm{$R$ a field}" description, dashed]                                                                                                                                                                             &  &  & {H_k(M,R)}                                                                                                                                                                                    &  &                                        
+\end{tikzcd}
+\]
+\colin{Poincare lefschetz and de Rham will guarantee us that the Hodge duality isomorphism actually makes sense. Hodge needs to be on the de Rham cohomologies not just the $R$ cohomology}
+
+\begin{remark}
+Please do note that the above isomorphisms to the monogenic fields require a metric $g$ and require it to be definite otherwise we lose the elliptic properties of $\grad$! All other isomorphisms require only a volume form.
+\end{remark}
+\colin{Do Harmonic fields define integral manifolds?}
+
+
+
+\subsection{Alexander Duality}
+
+\colin{Linking and higher order linking could be good to put here.}
+
+\subsection{K\"unneth Formula}
+
+When given a topological space that is a product $X\times Y$, it suffices to understand the homology on each component by the following:
+\begin{theorem}[K\"unneth Formula]
+Given two relative pairs of topological spaces $(X,A)$ and $(Y,B)$ we have (over $\R$)
+\begin{equation}
+    H^\bullet(X\times Y, A\times Y \cup X \times B) \cong H^\bullet(X,A)\otimes H^\bullet(Y,B)
+\end{equation}
+is an isomorphism of rings. If $A=B=\emptyset$ (so the pairs are absolute) then
+\begin{equation}
+    H^\bullet(X\times Y) \cong \bigoplus_{i+j=k} H^\bullet(X)\otimes H_\bullet(Y). 
+\end{equation}
+\end{theorem}
+
+In our case, if we ignore the ring structure we can also pass the K\"unneth formula back to homology and currents if need be. Fortunately, we are well equipped to work with fields given the tensor product becomes the wedge product in our cohomology ring by the quotient we used in the Clifford algebra. That is, if $a_k\in H^i(X,A)$ and $b_k\in H^j(Y,B)$ then $a_k \wedge b_k \in H^{i+j}(X\times Y, A\times Y \cup X \times B)$.
+
+\colin{I wonder what can be said about foliations}
+\colin{The Kunneth theorem should also be helping us see WHERE the homology actually comes from. This may be useful. For example, it may let us use the fact that part of the Hodge-Dirac operator is elliptic and we can think of part of the homology as coming from monogenic fields on slices of time (which is true in some circumstances)}
+\colin{Speaking of currents here would also be great though they could be saved for measurements? Capacitance $C=\frac{q}{V}$}
+\begin{example}~
+\begin{figure}
+    \centering
+    \includegraphics[width=.6\textwidth]{figures/cavity_capacitance.png}
+\end{figure}
+\begin{itemize}
+    \item (Cavity Signal Manifold) 
+    
+        \begin{itemize}
+            \item (AC Cavity) Let $M=N^3 \times T$ where $N^3$ is the cavity and $T$ is a signal. \colin{It would be interesting to combine both of these $T$? And earlier it would be good to work with them a bit. Will it be possible to show that $e_0^2=-1$ must be true? \url{https://math.stackexchange.com/questions/2542841/de-rham-cohomology-of-s1}}. We then have that 
+\begin{equation}
+    \partial M = \partial N^3 \times S^1
+\end{equation}
+since $\partial S^1 = \emptyset$. The homology for $S^1$ is then $H_0(S^1)\cong \R$, $H_1(S^1)\cong 0$, and for $k\geq 2$, $H_k(S^1)\cong 0$. We can now use the K\"unneth formula to find
+\begin{align}
+    H^k(M) &\cong \bigoplus_{i+j=k} H^i(N^3)\otimes H^j(S^1)\\
+    H^k(\boundary) &\cong \bigoplus_{i+j=k} H^i(\partial N^3)\otimes H^j(S^1)\\
+    H^k(M,\boundary) &\cong \bigoplus_{i+j=k} H^i(N^3,\partial N^3)\otimes H^j(S^1)
+\end{align}
+So we get the following (omitting those that are zero):
+\begin{align*}
+    H^0(M) &\cong \underbrace{\R \otimes \R}_{H^0(N^3)\otimes H^0(S^1)} \cong \R\\
+    H^1(M) &\cong \underbrace{(\R \otimes \R)}_{H^0(N^3)\otimes H^1(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H^1(N^3)\otimes H^0(S^1)} \cong \R\\
+    H^2(M) &\cong \underbrace{(\R \otimes 0)}_{H^0(N^3)\otimes H^2(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H^1(N^3)\otimes H^1(S^1)} \oplus \underbrace{(\R \otimes \R)}_{H^2(N^3)\otimes H^0(S^1)} \cong \R\\
+    H^3(M) &\cong \underbrace{(\R \otimes 0)}_{H^0(N^3)\otimes H^3(S^1)} \oplus \underbrace{(0 \otimes 0)}_{H^1(N^3)\otimes H^2(S^1)} \oplus \underbrace{(\R \otimes \R)}_{H^2(N^3)\otimes H^1(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H^3(N^3)\otimes H^0(S^1)} \cong \R\\
+\end{align*}
+hence on $M$ a nontrivial class $H^1(M)$ is generated by a vector field of the form $\epsilon e_0$ where $e_0$ is the generator of the nontrivial homology class of $S^1$ and $\rho$ is a constant scalar. In $H^2(M)$ we have a nontrivial class given by $q E$ where $q$ is a scalar and $E$ is an absolute second homology class (a generator can be given by $\frac{1}{r^2}e_\theta e_\phi$). Finally, the nontrivial class in $H^3(M)$ proves most interesting since we can put $E\wedge e_0$.
+\begin{align*}
+    H^0(\partial M) &\cong \underbrace{\R^2 \otimes \R}_{H^0(\partial N^3)\otimes H^0(S^1)} \cong \R^2 \\
+    H^1(\partial M) &\cong \underbrace{(\R^2 \otimes \R)}_{H^0(\partial N^3)\otimes H^1(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H^1(\partial N^3)\otimes H^0(S^1)} \cong \R^2 \\
+    H^2(\partial M) &\cong \underbrace{(\R \otimes 0)}_{H^0(\partial N^3)\otimes H^2(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H^1(\partial N^3)\otimes H^1(S^1)} \oplus \underbrace{(\R^2 \otimes \R)}_{H^2(\partial N^3)\otimes H^0(S^1)} \cong \R^2\\
+    H^3(\partial M) &\cong \underbrace{(\R^2 \otimes 0)}_{H^0(\partial N^3)\otimes H^3(S^1)} \oplus \underbrace{(0 \otimes 0)}_{H^1(\partial N^3)\otimes H^2(S^1)} \oplus \underbrace{(\R^2 \otimes \R)}_{H^2(\partial N^3)\otimes H^1(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H^3(\partial N^3)\otimes H^0(S^1)} \cong \R^2\\
+\end{align*}
+By Poincare duality it suffices to mention just $H^0$ and $H^1$. There are two constants to be defined for building the two classes of $H^0(\partial M)$, namely $\epsilon q_0$ and $\epsilon q_1$ for the inner and outer spheres respectively. In $H^1(\partial M)$ we have the classes $V_0 e_0$ and $V_1 e_0$
+\begin{align*}
+    H^1(M,\partial M) &\cong \underbrace{(0 \otimes \R)}_{H^0(N^3,\partial N^3)\otimes H^1(S^1)} \oplus \underbrace{(\R \otimes \R)}_{H^1(N^3,\partial N^3)\otimes H^0(S^1)} \cong \R \\
+    H^2(M,\partial M) &\cong \underbrace{(0 \otimes 0)}_{H^0(N^3,\partial N^3)\otimes H^2(S^1)} \oplus \underbrace{(\R \otimes \R)}_{H^1(N^3,\partial N^3)\otimes H^1(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H^2(N^3,\partial N^3)\otimes H^0(S^1)} \cong \R\\
+    H_3(M,\partial M) &\cong \underbrace{(0 \otimes 0)}_{H^0(N^3,\partial N^3)\otimes H^3(S^1)} \oplus \underbrace{(\R \otimes 0)}_{H^1(N^3,\partial N^3)\otimes H^2(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H^2(N^3,\partial N^3)\otimes H^1(S^1)} \oplus \underbrace{(\R \otimes \R)}_{H^3(\partial N^3)\otimes H^0(S^1)} \cong \R\\
+    H_4(M,\partial M) &\cong \underbrace{(0 \otimes 0)}_{H^0(N^3,\partial N^3)\otimes H^4(S^1)} \oplus \underbrace{(\R \otimes 0)}_{H^1(\partial N^3)\otimes H^3(S^1)} \oplus \underbrace{(0 \otimes 0)}_{H^2(N^3,\partial N^3)\otimes H^2(S^1)} \oplus \underbrace{(\R \otimes \R)}_{H^3(N^3,\partial N^3)\otimes H^1(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H^4(N^3,\partial N^3)\otimes H^0(S^1)} \cong \R.
+\end{align*}
+These above are all granted by Poincar\'e--Lefschetz but it is worth mentioning the $H^2(M)$ class is captured in the $H^2(M,\partial M)$ class by $\epsilon E = \frac{\rho}{r^2} e_r$ since $\grad \wedge E=0$ and $\normal \wedge E=0$. \colin{We can actually just do Hodge theory on both parts}
+
+Finally the long exact sequence of homology
+\[
+\begin{tikzcd}
+0 \arrow[r]                          & H_4(\partial M)\cong 0 \arrow[r, "\iota^*"]            & H_4(M)\cong 0 \arrow[r, "\jmath^*"]          & {H_4(M,\partial M)\cong \R} \arrow[r, "\partial"]          & \cdots \\
+\cdots \arrow[r, "\partial"]                          & H_3(\partial M)\cong \R^2 \arrow[r, "\iota^*"]            & H_3(M)\cong \R \arrow[r, "\jmath^*"]          & {H_3(M,\partial M)\cong \R} \arrow[r, "\partial"]          & \cdots \\
+\cdots \arrow[r, "\partial"] & H_2(\partial M)\cong \mathbb{R}^2 \arrow[r, "\iota^*"]   & H_2(M) \cong \R \arrow[r, "\jmath^*"]         & {H_2(M,\partial M)\cong \R} \arrow[r, "\partial"] & \cdots \\
+\cdots \arrow[r, "\partial"] & H_1(\partial M)\cong \mathbb{R}^2 \arrow[r, "\iota^*"] & H_1(M)\cong \mathbb{R} \arrow[r, "\jmath^*"] & {H_1(M,\partial M)\cong\R} \arrow[r, "\partial"]          & \cdots \\
+\cdots \arrow[r, "\partial"] & H_0(\partial M)\cong \mathbb{R}^2 \arrow[r, "\iota^*"]   & H_0(M)\cong \mathbb{R} \arrow[r, "\jmath^*"] & {H_0(M,\partial M)\cong 0} \arrow[r, "\partial"]          & 0     
+\end{tikzcd}
+\]
+\colin{I want to get the AC behavior of a capacitor out of this just from topology. Not sure if it is actually possible. Could also treat this like a resistor.}
+
+            \item (DC Cavity) Let $M=N^3 \times T$ where $N^3$ is the cavity and $T=[0,\infty]$ is a DC signal \colin{Okay this is annoying. Probably just use $[0,\infty)$ and look at compactly supported homology}. We then have that 
+\begin{equation}
+    \partial M = \partial N^3 \times T \cup N^3 \times \{0,1\} \cup \partial N^3 \times \{\infty\} = (N^3 \times T) \cup (\partial N^3 \sqcup \partial N^3)
+\end{equation}
+since $\partial [0,\infty]$. 
+\begin{align}
+    H^k(M) &\cong \bigoplus_{i+j=k} H^i(N^3)\otimes H^j(T)\\
+    H^k(\boundary) &\cong H^k(\partial N^3) \oplus H^k(\partial N^3)\\
+    H^k(M,\boundary) &\cong \bigoplus_{i+j=k} H^i(N^3,\partial N^3)\otimes H^j(T,\partial T)
+\end{align}
+Noting that the cohomology of a disjoint union $\sqcup$ is the sum of cohomologies. 
+
+So we get the following (omitting those that are zero):
+\begin{align*}
+    H^0(M) &\cong \underbrace{\R \otimes \R}_{H^0(N^3)\otimes H^0(T)} \cong \R\\
+    H^1(M) &\cong \underbrace{(\R \otimes 0)}_{H^0(N^3)\otimes H^1(T)} \oplus \underbrace{(0 \otimes \R)}_{H^1(N^3)\otimes H^0(T)} \cong 0\\
+    H^2(M) &\cong \underbrace{(\R \otimes 0)}_{H^0(N^3)\otimes H^2(T)} \oplus \underbrace{(0 \otimes 0)}_{H^1(N^3)\otimes H^1(T)} \oplus \underbrace{(\R \otimes \R)}_{H^2(N^3)\otimes H^0(T)} \cong \R\\
+    H^3(M) &\cong \underbrace{(\R \otimes 0)}_{H^0(N^3)\otimes H^3(T)} \oplus \underbrace{(0 \otimes 0)}_{H^1(N^3)\otimes H^2(T)} \oplus \underbrace{(\R \otimes 0)}_{H^2(N^3)\otimes H^1(T} \oplus \underbrace{(0 \otimes \R)}_{H^3(N^3)\otimes H^0(T)} \cong 0\\
+\end{align*}
+\colin{Redo this paragraph for DC}
+hence on $M$ a nontrivial class $H^1(M)$ is generated by a vector field of the form $\rho e_0$ where $e_0$ is the generator of the nontrivial homology class of $S^1$ and $\rho$ is a constant scalar. In $H^2(M)$ we have a nontrivial class given by $\rho E$ where $\epsilon$ is a scalar and $J$ is an absolute second homology class (a generator can be given by $\frac{1}{r^2}e_\theta e_\phi$). Finally, the nontrivial class in $H^3(M)$ proves most interesting since we can put $E\wedge e_0$.
+\begin{align*}
+    H^0(\partial M) &\cong \underbrace{\R^2 \otimes \R}_{H^0(\partial N^3)\otimes H^0(S^1)} \cong \R^2 \\
+    H^1(\partial M) &\cong \underbrace{(\R^2 \otimes \R)}_{H^0(\partial N^3)\otimes H^1(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H^1(\partial N^3)\otimes H^0(S^1)} \cong \R^2 \\
+    H^2(\partial M) &\cong \underbrace{(\R \otimes 0)}_{H^0(\partial N^3)\otimes H^2(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H^1(\partial N^3)\otimes H^1(S^1)} \oplus \underbrace{(\R^2 \otimes \R)}_{H^2(\partial N^3)\otimes H^0(S^1)} \cong \R^2\\
+    H^3(\partial M) &\cong \underbrace{(\R^2 \otimes 0)}_{H^0(\partial N^3)\otimes H^3(S^1)} \oplus \underbrace{(0 \otimes 0)}_{H^1(\partial N^3)\otimes H^2(S^1)} \oplus \underbrace{(\R^2 \otimes \R)}_{H^2(\partial N^3)\otimes H^1(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H^3(\partial N^3)\otimes H^0(S^1)} \cong \R^2\\
+\end{align*}
+By Poincare duality it suffices to mention just $H^0$ and $H^1$. There are two constants to be defined for building the two classes of $H^0(\partial M)$, namely $\epsilon \rho_0$ and $\epsilon \rho_1$ for the inner and outer spheres respectively. In $H^1(\partial M)$ we have the classes $V_0 e_0$ and $V_1 e_0$
+\begin{align*}
+    H^1(M,\partial M) &\cong \underbrace{(0 \otimes \R)}_{H^0(N^3,\partial N^3)\otimes H^1(S^1)} \oplus \underbrace{(\R \otimes \R)}_{H^1(N^3,\partial N^3)\otimes H^0(S^1)} \cong \R \\
+    H^2(M,\partial M) &\cong \underbrace{(0 \otimes 0)}_{H^0(N^3,\partial N^3)\otimes H^2(S^1)} \oplus \underbrace{(\R \otimes \R)}_{H^1(N^3,\partial N^3)\otimes H^1(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H^2(N^3,\partial N^3)\otimes H^0(S^1)} \cong \R\\
+    H_3(M,\partial M) &\cong \underbrace{(0 \otimes 0)}_{H^0(N^3,\partial N^3)\otimes H^3(S^1)} \oplus \underbrace{(\R \otimes 0)}_{H^1(N^3,\partial N^3)\otimes H^2(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H^2(N^3,\partial N^3)\otimes H^1(S^1)} \oplus \underbrace{(\R \otimes \R)}_{H^3(\partial N^3)\otimes H^0(S^1)} \cong \R\\
+    H_4(M,\partial M) &\cong \underbrace{(0 \otimes 0)}_{H^0(N^3,\partial N^3)\otimes H^4(S^1)} \oplus \underbrace{(\R \otimes 0)}_{H^1(\partial N^3)\otimes H^3(S^1)} \oplus \underbrace{(0 \otimes 0)}_{H^2(N^3,\partial N^3)\otimes H^2(S^1)} \oplus \underbrace{(\R \otimes \R)}_{H^3(N^3,\partial N^3)\otimes H^1(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H^4(N^3,\partial N^3)\otimes H^0(S^1)} \cong \R.
+\end{align*}
+These above are all granted by Poincar\'e--Lefschetz but it is worth mentioning the $H^2(M)$ class is captured in the $H^2(M,\partial M)$ class by $\epsilon E = \frac{\rho}{r^2} e_r$. \colin{We can actually just do Hodge theory on both parts. Maybe worth showing how this aligns with Poincare lefshetz?}
+\colin{left off here}
+Finally the long exact sequence of homology
+\[
+\begin{tikzcd}
+0 \arrow[r]                          & H_4(\partial M)\cong 0 \arrow[r, "\iota^*"]            & H_4(M)\cong 0 \arrow[r, "\jmath^*"]          & {H_4(M,\partial M)\cong \R} \arrow[r, "\partial"]          & \cdots \\
+\cdots \arrow[r, "\partial"]                          & H_3(\partial M)\cong \R^2 \arrow[r, "\iota^*"]            & H_3(M)\cong \R \arrow[r, "\jmath^*"]          & {H_3(M,\partial M)\cong \R} \arrow[r, "\partial"]          & \cdots \\
+\cdots \arrow[r, "\partial"] & H_2(\partial M)\cong \mathbb{R}^2 \arrow[r, "\iota^*"]   & H_2(M) \cong \R \arrow[r, "\jmath^*"]         & {H_2(M,\partial M)\cong \R} \arrow[r, "\partial"] & \cdots \\
+\cdots \arrow[r, "\partial"] & H_1(\partial M)\cong \mathbb{R}^2 \arrow[r, "\iota^*"] & H_1(M)\cong \mathbb{R} \arrow[r, "\jmath^*"] & {H_1(M,\partial M)\cong\R} \arrow[r, "\partial"]          & \cdots \\
+\cdots \arrow[r, "\partial"] & H_0(\partial M)\cong \mathbb{R}^2 \arrow[r, "\iota^*"]   & H_0(M)\cong \mathbb{R} \arrow[r, "\jmath^*"] & {H_0(M,\partial M)\cong 0} \arrow[r, "\partial"]          & 0     
+\end{tikzcd}
+\]
+\colin{I want to get the DC behavior of a capacitor out of this just from topology or just treat it like a resistor.}
+\colin{Also do alexander duality}
+        \end{itemize}
+
+
+
+
+
+\item Let $N^3$ be the solid torus from before and let us consider the 4-manifold $M=N^3 \times S^1$. Note that this manifold admits global coordinates $(x,y,z,t)$ where $t$ is the angular coordinate on $S^1$. Moreover, $M$ is metrizable with a semi-Riemannian metric of signature $(+,+,+,-)$. In other words, $M$ is a valid spacetime. 
+\colin{I think on a general spacetime foliated manifold, the Dirac operator restricted to the spatial leaves of the foliation is still elliptic. Can this be leveraged into something? Something like a time varying Hodge theory?}
+
+We then have that 
+\begin{equation}
+    \partial M = \partial N^3 \times S^1
+\end{equation}
+since $\partial S^1 = \emptyset$. The homology for $S^1$ is then $H_0(S^1)\cong \R$, $H_1(S^1)\cong 0$, and for $k\geq 2$, $H_k(S^1)\cong 0$. We can now use the K\"unneth theorem to see that
+\begin{equation}
+    \bigoplus_{i+j=k} H_i(N^3)\otimes H_j(S^1) \cong H_k(M).
+\end{equation}
+So we get
+\begin{align*}
+    H_0(M) &\cong \underbrace{\R \otimes \R}_{H_0(N^3)\otimes H_0(S^1)} \cong \R\\
+    H_1(M) &\cong \underbrace{(\R \otimes \R)}_{H_0(N^3)\otimes H_1(S^1)} \oplus \underbrace{(\R \otimes \R)}_{H_1(N^3)\otimes H_0(S^1)} \cong \R^2\\
+    H_2(M) &\cong \underbrace{(\R \otimes 0)}_{H_0(N^3)\otimes H_2(S^1)} \oplus \underbrace{(\R \otimes \R)}_{H_1(N^3)\otimes H_1(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H_2(N^3)\otimes H_0(S^1)} \cong \R\\
+    H_3(M) &\cong \underbrace{(\R \otimes 0)}_{H_0(N^3)\otimes H_3(S^1)} \oplus \underbrace{(\R \otimes 0)}_{H_1(N^3)\otimes H_2(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H_2(N^3)\otimes H_1(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H_3(N^3)\otimes H_0(S^1)} \cong \R\\
+    H_4(M) &\cong \underbrace{(\R \otimes 0)}_{H_0(N^3)\otimes H_4(S^1)} \oplus \underbrace{(\R \otimes 0)}_{H_1(N^3)\otimes H_3(S^1)} \oplus \underbrace{(0 \otimes 0)}_{H_2(N^3)\otimes H_2(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H_3(N^3)\otimes H_1(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H_4(N^3)\otimes H_0(S^1)} \cong 0
+\end{align*}
+\colin{In $H_3(M)$ I think this corresponds to Faraday's law (in a vacuum?) somehow. This is also seemingly the only ``interesting'' case in here. The rest all come from scalar functions in some way. Please read this comment with a hefty grain of salt}
+and similarly 
+\begin{align*}
+    H_0(\partial M) &\cong \underbrace{\R \otimes \R}_{H_0(\partial N^3)\otimes H_0(S^1)} \cong \R \\
+    H_1(\partial M) &\cong \underbrace{(\R \otimes \R)}_{H_0(\partial N^3)\otimes H_1(S^1)} \oplus \underbrace{(\R^2 \otimes \R)}_{H_1(\partial N^3)\otimes H_0(S^1)} \cong \R^3 \\
+    H_2(\partial M) &\cong \underbrace{(\R \otimes 0)}_{H_0(\partial N^3)\otimes H_2(S^1)} \oplus \underbrace{(\R^2 \otimes \R)}_{H_1(\partial N^3)\otimes H_1(S^1)} \oplus \underbrace{(\R \otimes \R)}_{H_2(\partial N^3)\otimes H_0(S^1)} \cong \R^3\\
+    H_3(\partial M) &\cong \underbrace{(\R \otimes 0)}_{H_0(\partial N^3)\otimes H_3(S^1)} \oplus \underbrace{(\R^2 \otimes 0)}_{H_1(\partial N^3)\otimes H_2(S^1)} \oplus \underbrace{(\R \otimes \R)}_{H_2(\partial N^3)\otimes H_1(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H_3(\partial N^3)\otimes H_0(S^1)} \cong \R\\
+    H_4(\partial M) &\cong \underbrace{(\R \otimes 0)}_{H_0(\partial N^3)\otimes H_4(S^1)} \oplus \underbrace{(\R^2 \otimes 0)}_{H_1(\partial N^3)\otimes H_3(S^1)} \oplus \underbrace{(\R \otimes 0)}_{H_2(\partial N^3)\otimes H_2(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H_3(\partial N^3)\otimes H_1(S^1)} \oplus \underbrace{(0 \otimes \R)}_{H_4(\partial N^3)\otimes H_0(S^1)} \cong 0.
+\end{align*}
+\colin{Not only does the kunneth formula tell us where solutions may come from, it also tells us where we are killing them off.}
+\[
+\begin{tikzcd}
+0 \arrow[r]                          & H_4(\partial M)\cong 0 \arrow[r, "\iota^*"]            & H_4(M)\cong 0 \arrow[r, "\jmath^*"]          & {H_4(M,\partial M)\cong \R} \arrow[r, "\partial"]          & \cdots \\
+\cdots \arrow[r, "\partial"]                          & H_3(\partial M)\cong \R \arrow[r, "\iota^*"]            & H_3(M)\cong \R \arrow[r, "\jmath^*"]          & {H_3(M,\partial M)\cong \textcolor{red}{????}} \arrow[r, "\partial"]          & \cdots \\
+\cdots \arrow[r, "\partial"] & H_2(\partial M)\cong \mathbb{R}^3 \arrow[r, "\iota^*"]   & H_2(M) \cong \R \arrow[r, "\jmath^*"]         & {H_2(M,\partial M)\cong \textcolor{red}{????}} \arrow[r, "\partial"] & \cdots \\
+\cdots \arrow[r, "\partial"] & H_1(\partial M)\cong \mathbb{R}^3 \arrow[r, "\iota^*"] & H_1(M)\cong \mathbb{R}^2 \arrow[r, "\jmath^*"] & {H_1(M,\partial M)\cong\textcolor{red}{????}} \arrow[r, "\partial"]          & \cdots \\
+\cdots \arrow[r, "\partial"] & H_0(\partial M)\cong \mathbb{R} \arrow[r, "\iota^*"]   & H_0(M)\cong \mathbb{R} \arrow[r, "\jmath^*"] & {H_0(M,\partial M)\cong \textcolor{red}{????}} \arrow[r, "\partial"]          & 0     
+\end{tikzcd}
+\]
+\colin{Honestly $\partial$ is really just $\partial$ so I should stop that}
+\end{itemize}
+
+
+\end{example}
+
+
+
+
+
+
+
+\subsection{Homotopy invariance}
+
+
+%---------------------------------------------------------------------------------------------------------------------------
+\subsection{Maxwell' Equations}
+\colin{I want to do now build from the example before and integrate analysis. Specifically, it would be good to relate differential laws to integral laws by integration over loops and spheres and what not. This is where I think it will be pertinent to lay out maxwell's equations! The space time split should somehow correspond to the Kunneth theorem. I mean, the Clifford algebra is just a quotient of tensors.}
+
+\colin{I am putting this after currents now because I think the conservation laws are THE way to derive this.}
+
+For this example, let $M$ be a Lorentz 4-manifold and for simplicity assume $M$ supports global coordinates. Moreover, take the Minkwoski metric $\eta$ and assume that each $\G_xM = \clifford(T_xM,\eta)$ so we can put $\G_xM\cong \G_{1,3}$. We let the set of multivector fields on $M$ be given by $\G_{1,3}(M)$ to mimic our earlier example. 
+
+Due to this metric signature, it will be pertinent to factor the Hodge-Dirac operator by
+\begin{equation}
+    \grad = \vect + \vecgrad
+\end{equation}
+and we refer to $\vect$ as the \emph{temporal gradient} and $\vecgrad$ as the \emph{spatial gradient} and define them as
+\begin{align}
+    \vect \coloneqq \blade{e}^0 \nabla_{\blade{e}_0} \qquad \textrm{and} \qquad \vecgrad \coloneqq \sum_{i=1}^3 \blade{e}^i \nabla_{\blade{e}_i}.
+\end{align}
+The notation will become clear momentarily. 
+
+Let $F\in \G^2_{1,3}(M)$, then we can be split into constituent bivectors $E$ and $B$ by
+\begin{align}
+	F = E+B.
+\end{align}
+where
+\begin{equation}
+    E \coloneqq E^1 \blade{e}_0 \blade{e}_1 + E^2 \blade{e}_0 \blade{e}_2 + E^3 \blade{e}_0 \blade{e}_3 \qquad \textrm{and} \qquad B \coloneqq B^{3} \blade{e}_1 \blade{e}_2 + B^{2} \blade{e}_3 \blade{e}_1 + B^{1} \blade{e}_2 \blade{e}_3.
+\end{equation}
+As mentioned, this $F$ cannot in general be written as the wedge of two vector fields. Visually, this is because there are 2-dimensional subspaces in $\R^4$ that meet only in a point. For instance, the purely spatial subspace $\blade{E}_{23}$ meets the spatio-temporal subspace $\blade{E}_{01}$ only at the origin. This leads to a dramatic difference in how we would percieve the physics of bivector fields. Of course, we know the physical differences between $E$ and $B$.
+
+If we apply the Hodge-Dirac operator to $F$ we get $\grad F = \grad \wedge F + \grad \contract F$ \colin{It would be interesting to see if $F$ links with $J = \grad \contract F$}. The grade-3 components are
+\begin{align}
+\label{eq:gauss_faraday}
+	\grad \wedge F ~\implies~ \underbrace{\vecgrad \wedge B}_{\textrm{spatial}} + \underbrace{\vecgrad \wedge E + \vect \wedge B}_{\textrm{spatio-temporal}}.
+\end{align}
+Notice that we split these into components that are purely spatial and those that are spatio-temporal. If we force $\grad \wedge F=0$, then we find
+\begin{align}
+    \vecgrad \wedge B &= 0 &&\textrm{Gauss's law for magnetism}\\
+    \vecgrad \wedge E + \vect \wedge B &= 0 &&\textrm{Faraday's law of induction.}
+\end{align}
+Notice that these are both homogeneous expressions since we took $\grad \wedge F=0$. To see this more explicitly, let $\blade{E}_{123}$ be the spatial trivector, then we can use this as the spatial dual by 
+\begin{equation}
+    \vec{B}=B\blade{E}_{321}= B^1\blade{e}_1+B^2\blade{e}_2+B^3\blade{e}_3
+\end{equation}
+and so we find that $\vecgrad \wedge B=0$ is equivalent to
+\begin{equation}
+    \vecgrad \cdot \vec{B}=0,
+\end{equation}
+which we recognize.
+
+In 3 dimensions we have the cross product. It turns out we can write $\times$ between two spatial vectors $\blade{v},\blade{w}$ by
+\begin{equation}
+    \blade{v}\times \blade{w} = (\blade{v}\wedge \blade{w})\blade{E}_{321}.
+\end{equation}
+We can also define
+\begin{equation}
+    \vec{E}\coloneqq \blade{e}_0 \contract E = E^1 \blade{e}_1 + E^2 \blade{e}_2 + E^3 \blade{e}_3.
+\end{equation}
+Furthermore, if we identify $\frac{\partial}{\partial t}\coloneqq \nabla_{\blade{e}_0}=\blade{e}_0 \contract \vect$, then we can left contract Faraday's law by $\blade{e}_0$ and right multiply by $\blade{E}_{321}$ to get
+\begin{equation}
+    \vecgrad \times \vec{E} + \frac{\partial}{\partial t} \vec{B} = 0.
+\end{equation}
+Which is the more recognizable form of Faraday's law.
+
+Onto the 
+\begin{align}
+\label{eq:spacetime_split}
+	\grad \cdot F=\blade{J}~\implies~ \underbrace{\blade{e}^0 \cdot \vec{\grad} \cdot B = \blade{e}^0 \cdot \blade{J}}_{\textrm{spatial}} +  \underbrace{\blade{e}^0 \wedge (\vec{\boldsymbol{\partial_t}} \cdot E + \vec{\grad} \cdot E) = \blade{e}^0 \wedge \blade{J}}_{\textrm{spatio-temporal}}
+\end{align}
+are Gauss's law for electricity and Ampere's law respectively. Multiplication by $\blade{e}^0$ seen in \cref{eq:spacetime_split} is often called the spacetime split and since \cref{eq:gauss_faraday} is homogeneous, we do not see this as a necessary step. The equations for the electric and magnetic potential can be found this way as well.
+
+
+$\grad F = \blade{J}$ or, as is typical
+\begin{align}
+	\grad \wedge F &= 0  &&\textrm{(homogeneous)}\\
+	\grad \cdot F &= \blade{J} && \textrm{(inhomogeneous)}.
+\end{align}
+The equation $\grad F = \blade{J}$ is manifestly Lorentz invariant due to the spin invariance of $\grad$. \colin{Show the Lorentz transformation on $F$ and the $E$ and $B$ factors. That will be pertinent. Really only the lorentz boosts matter. I have stuff on this in my final report. Showing the reflections are invariants for $E$ but not $B$ would be cool, so that motivates why we need $Spin$ not $Pin$ and we have to use bivectors in $\mathfrak{spin}$.}
+
+Supposing as well that $F$ has a potential $\blade{A}$, we can choose the Lorenz gauge so that $\grad \cdot \blade{A} = 0$ to get
+\begin{equation}
+\Delta \blade{A} = \blade{J}.
+\end{equation}
+
+
+
+
+
+\section{Examples}
+
+\textcolor{red}{It would also be good to take 3 manifolds and product with $N^3 \times [0,\infty]$ and you can look at the boundary here too. One is the start config, and the other would be the steady state. Also, accelerating charges and light would probably be good to get in this seeing as light is still a solution to $\grad F=0$.}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/conductors.png}
+    \caption{\textcolor{red}{This may be nice to include in this discussion}}
+\end{figure}
+
+\colin{In all of these examples it seems to look like we get that the media have constant permativity, capacitiance, permeability, or inductance. This is really just an artifact of choice. The non-constant and even potentially anisotropic behavior of a media is definitely interesting, but it is all geometric and literally comes from the Riemannian metric. Something should probably be said about this in a more exact way.}
+
+
+
+
+
+
+
+
+
+\section{Circuits, Materials, and Measurement Devices}
+\colin{Okay carefully read page 103 of Schwarz to see that the chain complex $(\Omega_N(M),\delta)$ gives the absolute cohomology, the $(\Omega_D(M),d)$ is the relative homology. Perp gives the map between these. Remember that the definiteness of the inner product here isn't granted in general. Just use the absolute and relative boundary conditions to do this. That's all we need. If a steady-state (meaning static case) electric current $J$ is such that $\grad \contract J=0$ but flows on surface of conductors, then $\normal \contract J = 0$ and so $J$ is an absolute homology class. But on a conductor, charge spreads out on the boundary. In a resistor, we have no such restrictions on $J$ and in steady state $\grad \contract J = 0$ and this is a could be a relative OR absolute homology class. Probably worth doing the examples later thinking of them as conductors/resistors. On conductors, problem is reduced to the surface. But in a resistor, a first homology class must be a link with the magnetic field. This will be somewith worth showing.}
+All of the measurement devices should be currents. So they are integrals over chains.
+
+
+\subsection{Conductors}
+
+Probably best to work with ideal conductors that do not resist current.
+
+\subsection{Ohmic materials}
+
+Couple the electric field to the current proportionally. It actually takes the voltage $\phi$ and the magnetic bivector field $B$ and then the spinor field $S=\phi +B$ is monogenic. Let me show this. First, let us write down Maxwell's equations. \colin{I stole this from my final report}At this point, we nearly have a set of equations that can be worked with. However, we need to determine a relationship between the electromagnetic field $F$ and the electromagnetic excitation $H$. This relationship is referred to as the \emph{constitutive law} and the simplest possible choice is linear so that $F = H^\perp$. Thus, we note \cref{eq:current_from_excitation,eq:magnetic_flux_conservation} yield the relativistic Maxwell equations as $\grad F = \blade{J}$ or, as is typical
+\begin{align}
+	\grad \wedge F &= 0  &&\textrm{(homogeneous)}\\
+	\grad \cdot F &= \blade{J} && \textrm{(inhomogeneous)}.
+\end{align}
+Supposing as well that $F$ has a potential $\blade{A}$, we can choose the Lorenz gauge so that $\grad \cdot \blade{A} = 0$ to get
+\begin{equation}
+\Delta \blade{A} = \blade{J}.
+\end{equation}
+
+Working locally, $F$ can be split into constituents $E$ and $B$ using superscripts to denote components
+\begin{align}
+	F = \underbrace{E^1 \blade{e}_0 \blade{e}_1 + E^2 \blade{e}_0 \blade{e}_2 + E^3 \blade{e}_0 \blade{e}_3}_{\textrm{electric field } E} + \underbrace{B^{3} \blade{e}_1 \blade{e}_2 + B^{2} \blade{e}_3 \blade{e}_1 + B^{1} \blade{e}_2 \blade{e}_3}_{\textrm{magnetic field } B}
+\end{align}
+Using this decomposition and noting that $\vec{\boldsymbol{\partial_t}}=\blade{e}^0 \nabla_{\blade{e}_0}$ is the (vector) time derivative and  $\vec{\grad} = \blade{e}^i \nabla_{\blade{e}_i}$ is the spatial gradient, we write the Heaviside's version of Maxwell's equations
+\begin{align}
+\label{eq:gauss_faraday}
+	\grad \wedge F=0 ~\implies~ \underbrace{\vec{\grad} \wedge B = 0}_{\textrm{spatial}} ~~~\textrm{and}~~~ \underbrace{\vec{\grad} \wedge E + \vec{\boldsymbol{\partial_t}} \wedge B = 0}_{\textrm{spatio-temporal}}
+\end{align}
+are Gauss's law for magnetism and Faraday's law from the homogeneous Maxwell equations and
+\begin{align}
+\label{eq:spacetime_split}
+	\grad \cdot F=\blade{J}~\implies~ \underbrace{\blade{e}^0 \cdot \vec{\grad} \cdot B = \blade{e}^0 \cdot \blade{J}}_{\textrm{spatial}}~~~\textrm{and}~~~ \underbrace{\blade{e}^0 \wedge (\vec{\boldsymbol{\partial_t}} \cdot E + \vec{\grad} \cdot E) = \blade{e}^0 \wedge \blade{J}}_{\textrm{spatio-temporal}}
+\end{align}
+are Gauss's law for electricity and Ampere's law respectively. Multiplication by $\blade{e}^0$ seen in \cref{eq:spacetime_split} is often called the spacetime split and since \cref{eq:gauss_faraday} is homogeneous, we do not see this as a necessary step. The equations for the electric and magnetic potential can be found this way as well.
+
+Now, suppose that the material $M$ is ohmic. This means the spatial current $\vec{\blade{J}}=\blade{e}^0\contract (\blade{e}^0 \wedge \blade{J})$ is proportional to the (spatial) gradient of the potential $\phi$. In particular, we let $\phi$ be such that $\vec{\grad}\phi = \blade{e}^0 \cdot E$. For an isotropic material of constant resistance 1, $\vec{\grad} \phi = \vec{\blade{J}}$. This implies
+\begin{equation}
+    \vec{\grad} (\phi + B) = 0,
+\end{equation}
+since Ampere's law implies $\vec{\grad} \cdot B = \vec{\blade{J}}$ and Gauss's law implies $\vec{\grad} \wedge B = 0$ (remember here that $B$ is a bivector not a vector!).
+
+\subsection{Capacitors}
+I think we could just use the cavity as a capacitor. One lead on the inner boundary and one on the outer boundary. Of course, this couldn't be a "real life" circuit element, but maybe it is worth thinking about how our real life capacitors are just trying to mimic this behavior.
+
+\subsection{Inductors}
+Similar story. I think we can just use the solid torus or something like it as an inductor. Really, I think an inductor is just a link on a circuit. In fact, this really is just alexander duality: \url{https://math.stackexchange.com/questions/1653975/relation-between-alexander-duality-and-linking-numbers}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/mutual_inductance.png}
+    \caption{\textcolor{red}{Here is an integral that computes mutual inductance. I think it would be worth comparing this to the Gauss linking integral which can also be computed via Alexander duality. That and the intersection product. Using alexander duality there are probably some more interesting products that can be computed. Examples with coils would be good since the magnetic field they generate will link the coils and drive current in the disconnected circuit components.}}
+\end{figure}
+
+\subsection{Circuits}
+
+Need some notion of what the heck a circuit is. I guess we can define it as a collection of conductors? A conductor being a spatial 3-manifold we remove from $S^3$?
+
+Series and parallel may be helpful to think about. Are things that are "in series" defined on the conductor and the "in parallel" as being defined on the complement? Alexander duality stuff?
+
+\subsection{Ammeter}
+
+Connected in series with the circuit. Low resistance so all current flows through this. It is only a first absolute (maybe relative???) homology class of the complement to the circuit? Dual to relative classes inside the conductor via Alexander and POincare duality. In essence, you split the conductor into two connected components and reglue them together with the ammeter.
+
+Okay, but how does a real ammeter actually work? 
+\begin{figure}
+    \centering
+    \includegraphics{figures/ammeter.png}
+    \caption{Ammeter}
+\end{figure}
+Red wires are connected to the circuit and induce a force on the needle to overcome the spring. How much the needle is deflected is proportional to the current. So actually you never measure current directly I guess. YOu just measure what magnetic fields do. I don't know if this is a philosophical distinction or what.
+
+\subsection{Voltmeter}
+
+Connected in parallel with the circuit. High resistance so it doesn't steal current from the circuit. So ours should probably be infinite resistance so no current flows along it. In other words, it has no first absolute homology in the complete to the circuit?
+
+If I'm not mistaken, a voltmeter uses an ammeter but places a Ohmic resistor in the red wire so that the current is proportional now to voltage difference. 
+
+But maybe a better way to think about it is that it is a map of the zero sphere into the conductor where you then subtract the values at each point the zero sphere lands. That would also be like a "wire" with infinite resistance.
+
+In that case, it is like you look at the image of the boundary map of a relative 1 cycle chain on the complement to the conductor and by integration and stokes theorem, you'd get the difference of the potential on the boundary of the relative 1 cycle.
+
+\subsection{Ohmmeter}
+
+Applies a current to the circuit and measures the resulting voltage. So it is a product of a voltmeter and current in some way.
+
+
+\section{Conclusion}
+
+
+%To summarize, the work here puts together introduced the Clifford algebra and analysis structures on manifolds to provide a nice perspective on the (co)homological theory of manifolds from which an axiomatic theory of electromagnetism followed. We investigate the structure of relativistic phase space as well as a relativistic configuration space for particles. When these particles couple to the electromagnetic field, their evolution is governed by Fermi-Faraday transport and, if we take into account a fluid of a single family of charged particles, we arrive at some continuity equations for relativistic charged fluids.
+%
+%There is plenty remaining to do. The exposition of the (co)homology only included compact support and it would be great to extend this. There are other sources on the the relativistic Vlasov equation \cite{brizard_new_2000,marsden_hamiltonian_1982} that should be united with our knowledge on the relativistic phase space. Fundamentally, neither of these include collisions of particles which would be necessary in dense plasmas (especially those dense with heavy neutral particles). Finally, the relativistic charged fluid equations in \cref{subsec:charged_fluid} should be corroborated with \cite{pausader_relativistic_2013} and further investigated.
+\section{Extras}
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{figures/splitting.png}
+    \caption{I like this explanation on the Exact Sequence wikipedia page}
+\end{figure}
+
+% The space $\contfields{M}{\G}$ comes with the \emph{uniform norm}
+% \begin{equation}
+% \|f\|_\infty \coloneqq \sup_{x\in M} |f(x)|.
+% \end{equation}
+% Recall that at any point $x\in M$ we have that $|f(x)|^2=(f(x),f(x))$ is nothing but the Euclidean vector norm on $\R^{2n}$, so $\|f\|_\infty$ really is a norm on $\contfields{M}{\G}$. Furthermore:
+
+% \begin{proposition}
+% If $M$ is a compact Riemannian manifold, then the space $\contfields{M}{\G}$ is a Banach algebra.
+% \end{proposition}
+% \begin{proof}
+% Note that $\G$ is a real $2^n$ dimensional Banach space with the multivector inner product. Since $M$ is a compact Hausdorff space, it follows that the space $\contfields{M}{\G}$ is a Banach space (see \cite{saab_integral_1990}). Taking $f,g \in \contfields{M}{\G}$ note that at each point
+% \begin{align}
+% (fg,fg) = \proj{}{(fg)^\dagger fg}=\proj{}{g^\dagger f^\dagger f g} = \proj{}{gg^\dagger f^\dagger f} = (gg^\dagger, f^\dagger f),
+% \end{align}
+% by the cyclic property (see \cite{chisolm_geometric_2012}). Using the Cauchy--Schwarz inequality
+% \begin{align}
+% |fg|^2 = (fg,fg) \leq (f^\dagger f, f^\dagger f) (gg^\dagger,gg^\dagger) = |f|^2 |g|^2.
+% \end{align}
+% Taking suprema, it follows that $\|fg\|_\infty\leq \|f\|_\infty\|g\|_\infty$.
+% \end{proof}
+
+% We topologize the Banach algebra $\contfields{M}{\G}$ with the uniform norm topology. Dually, we construct $\G$ valued functionals on this space which assume the name currents \emph{\`a la} de Rham.
+
+
+\bibliographystyle{unsrt}
+\bibliography{main}
+
+\end{document}
+%---------------------------------------------------------------------------------------------------------------------------

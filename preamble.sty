@@ -1,0 +1,287 @@
+%% Imports
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{xfrac}
+\usepackage{soul}
+\usepackage[english]{babel}
+\usepackage[colorlinks,linkcolor=blue,urlcolor=blue,citecolor=blue]{hyperref}
+%\renewcommand\familydefault{\sfdefault}
+%\usepackage{tgheros}
+\usepackage{tabularx}
+\let\openbox\relax
+\usepackage{amsmath,amssymb,mathrsfs,textcomp,amsthm}
+\usepackage{float,morefloats}
+
+\usepackage{multicol}
+\usepackage{mathtools}
+\usepackage{cleveref}
+\usepackage{authblk}
+\usepackage{xargs} 
+\usepackage{enumerate}
+
+
+% TikZ
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usetikzlibrary{babel,arrows,chains,matrix,positioning,scopes,calc,decorations,
+decorations.pathreplacing}
+
+% Document geometry
+\usepackage{geometry}
+\geometry{left=20mm,right=30mm,%
+bindingoffset=0mm, top=20mm,bottom=20mm} %previously set to 20mm all around
+\linespread{1.3}
+
+
+% Langle
+\makeatletter
+\DeclareFontFamily{OMX}{MnSymbolE}{}
+\DeclareSymbolFont{MnLargeSymbols}{OMX}{MnSymbolE}{m}{n}
+\SetSymbolFont{MnLargeSymbols}{bold}{OMX}{MnSymbolE}{b}{n}
+\DeclareFontShape{OMX}{MnSymbolE}{m}{n}{
+    <-6>  MnSymbolE5
+   <6-7>  MnSymbolE6
+   <7-8>  MnSymbolE7
+   <8-9>  MnSymbolE8
+   <9-10> MnSymbolE9
+  <10-12> MnSymbolE10
+  <12->   MnSymbolE12
+}{}
+\DeclareFontShape{OMX}{MnSymbolE}{b}{n}{
+    <-6>  MnSymbolE-Bold5
+   <6-7>  MnSymbolE-Bold6
+   <7-8>  MnSymbolE-Bold7
+   <8-9>  MnSymbolE-Bold8
+   <9-10> MnSymbolE-Bold9
+  <10-12> MnSymbolE-Bold10
+  <12->   MnSymbolE-Bold12
+}{}
+
+\let\llangle\@undefined
+\let\rrangle\@undefined
+\DeclareMathDelimiter{\llangle}{\mathopen}%
+                     {MnLargeSymbols}{'164}{MnLargeSymbols}{'164}
+\DeclareMathDelimiter{\rrangle}{\mathclose}%
+                     {MnLargeSymbols}{'171}{MnLargeSymbols}{'171}
+\makeatother
+
+
+% Document formatting
+%\makeatletter
+%\renewcommand{\maketitle}{
+%\begin{center}
+%\vspace{2ex}
+%{\huge \textsc{\@title}}
+%\vspace{1ex}
+%\\
+%\linia\\
+%\@author\\
+%\@date
+%\vspace{4ex}
+%\end{center}
+%}
+%\makeatother
+
+% Footers and headers
+%\usepackage{fancyhdr}
+%\pagestyle{fancy}
+%\lhead{}
+%\chead{}
+%\rhead{}
+%\lfoot{Topological Electromagnetism}
+%\cfoot{}
+%\rfoot{\thepage}
+%\renewcommand{\headrulewidth}{0pt}
+%\renewcommand{\footrulewidth}{0pt}
+
+% Theorem sets
+\newcommand{\linia}{\rule{\linewidth}{0.5pt}}
+\newcommand{\set}[1]{ \{#1\} }
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}[section]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\vecgrad}{\boldsymbol{\vec{\nabla}}}
+\newcommand{\vect}{\boldsymbol{\partial_t}}
+
+\newcommand{\tangentpart}{\boldsymbol{t}}
+\newcommand{\normalpart}{\boldsymbol{n}}
+% Commands
+% Currents
+\newcommand{\smoothcurrents}[2]{C_{#1}^\infty(M;#2)'}
+\newcommand{\contcurrents}[2]{C^0(#1;#2)'}
+
+% Fields
+\newcommand{\smoothfields}[2]{C^\infty(#1;#2)}
+\newcommand{\contfields}[2]{C^0(#1;#2)}
+\newcommand{\lfields}[2]{L^2(#1;#2)}
+
+\newcommand{\contract}{\hspace*{.5mm}\lrcorner \hspace*{.5mm}}
+\newcommand{\mycong}[1]{\mathrel{\stackrel{\makebox[0pt]{\mbox{\normalfont\tiny #1}}}{\cong}}}
+\newcommand{\Gcompact}{\mathcal{G}_\textrm{c}(M)}
+\newcommand{\Gcompactdual}{\mathcal{G}^*_\textrm{c}(M)}
+\newcommand{\clifford}{C\ell}
+\newcommand{\horizontal}{\mathcal{H}}
+\newcommand{\vertical}{\mathcal{V}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\exterior}[1]{\bigwedge\nolimits^#1}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\quat}{\mathbb{H}}
+\newcommand{\image}{\mathrm{im}}
+\newcommand{\bigslant}[2]{{\raisebox{.2em}{$#1$}\left/\raisebox{-.2em}{$#2$}\right.}}
+\newcommand{\RE}{\mathrm{Re}}
+\newcommand{\IM}{\mathrm{Im}}
+\newcommand{\multivectorbundle}{\mathcal{G}(M,g)}
+\newcommand{\multivectorfields}{\mathcal{G}(M)}
+\newcommand{\differentialforms}{\mathcal{G}^*(M)}
+\newcommand{\kvectorfields}[1]{\mathcal{G}^{#1}(M)}
+\newcommand{\evenfields}{\mathcal{G}^{[0]}(M)}
+\newcommand{\oddfields}{\mathcal{G}^{[1]}(M)}
+\newcommand{\id}{\mathrm{id}}
+\newcommand{\innerproduct}[2]{\left\langle #1, #2 \right\rangle_{L_2(\Sigma)}}
+\newcommand{\algebra}[1]{\mathcal{A}_{#1}}
+\newcommand{\grad}{\boldsymbol{\nabla}}
+\newcommand{\dirac}{\boldsymbol{D}}
+\newcommand{\geometricalg}{\mathcal{G}(V)}
+\newcommand{\spacealg}{\mathcal{G}_3}
+\newcommand{\dual}[1]{\overset{$\star$}&{#1}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\cauchy}{\mathcal{C}}
+\newcommand{\poisson}{\mathcal{P}}
+\newcommand{\tangent}{\boldsymbol{t}}
+\newcommand{\vecfield}{\mathfrak{X}}
+\newcommand{\A}{\operatorname{A}}
+\newcommand{\liealg}{\mathfrak{a}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\im}{\operatorname{im}}
+
+\newcommand{\openO}{\mathcal{O}}
+\newcommand{\openU}{\mathcal{U}}
+\newcommand{\characters}{\mathfrak{M}}
+\newcommand{\Span}{\operatorname{Span}}
+\newcommand{\paravectors}{\mathcal{P}}
+\newcommand{\paravectorfields}{\mathcal{P}(M)}
+\newcommand{\monogenics}{\mathcal{M}}
+\newcommand{\dualmonogenics}{\mathcal{M}^*}
+\newcommand{\Grassmannian}[2]{\operatorname{Gr}(#1,#2)}
+\newcommand{\spina}{\mathfrak{spin}}
+\newcommand{\sping}{\operatorname{Spin}}
+\newcommand{\ball}{\mathbb{B}}
+\newcommand{\disk}{\mathbb{D}}
+\newcommand{\projection}{\mathsf{P}}
+\newcommand{\vectorspace}{\mathbb{V}}
+\newcommand{\multivectorfieldson}[1]{\mathcal{G}(#1)}
+\newcommand{\biparavectorfieldson}[1]{\mathcal{G}_n(#1)^{0+2}}
+\newcommand{\spinnorm}[1]{\|#1\|_{L_2}}
+\newcommand{\rejection}{\mathsf{R}}
+\newcommand{\vectorpotential}{\mathbf{A}}
+\newcommand{\current}{\blade{j}}
+\newcommand{\magneticbivector}{\blade{b}}
+\newcommand{\cross}{\boldsymbol{\times}}
+\newcommand{\blade}[1]{\boldsymbol{#1}}
+\newcommand{\intcurrent}[1]{\left[ #1 \right]}
+%\newcommand{\multivecinnerproduct}[2]{\hspace*{.5mm}\ll \hspace*{-.5mm} #1, #2 \hspace*{-.5mm}\gg \hspace*{.5mm}}
+\newcommand{\multivecinnerproduct}[2]{\llangle #1, #2 \rrangle}
+\newcommand{\spacetime}{\boldsymbol{\gamma}}
+\newcommand{\gradst}{\boldsymbol{\nabla}_{\textrm{ST}}}
+\newcommand{\boundary}{{\partial M}}
+\newcommand{\normalcurrent}{\blade{j}^{\blade{\nu}}}
+\newcommand{\tangentialcurrent}{\blade{j}^{\blade{I}_\partial}}
+\newcommand{\normal}{\blade{\nu}}
+\newcommand{\pseudoscalar}{\blade{I}}
+\newcommand{\chain}[1]{\mathscr{#1}}
+
+% Forms stuff
+\newcommand{\harmonic}{\mathcal{H}}
+\newcommand{\monogenicex}[1]{\mathcal{M}^{#1}_{\textrm{ex}}(M)}
+\newcommand{\monogenicco}[1]{\mathcal{M}^{#1}_{\textrm{co}}(M)}
+\newcommand{\monogenicdirichlet}[1]{\mathcal{M}^{#1}_D(M)}
+\newcommand{\monogenicneumann}[1]{\mathcal{M}^{#1}_N(M)}
+\newcommand{\exactfields}[1]{\mathcal{E}^{#1}(M)}
+\newcommand{\coexactfields}[1]{\mathcal{C}^{#1}(M)}
+\newcommand{\monogenicfields}[1]{\mathcal{M}^{#1}(M)}
+\newcommand{\cliffordoplus}{\stackrel{C\ell}{\oplus}}
+\newcommand{\bivector}{\blade{B}}
+\newcommand{\forminnerproduct}[2]{\ll #1, #2\gg}
+\newcommand{\drcurrent}{\mathcal{D}}
+\newcommand{\period}{\operatorname{per}}
+
+\makeatletter
+\DeclareFontFamily{OMX}{MnSymbolE}{}
+\DeclareSymbolFont{MnLargeSymbols}{OMX}{MnSymbolE}{m}{n}
+\SetSymbolFont{MnLargeSymbols}{bold}{OMX}{MnSymbolE}{b}{n}
+\DeclareFontShape{OMX}{MnSymbolE}{m}{n}{
+    <-6>  MnSymbolE5
+   <6-7>  MnSymbolE6
+   <7-8>  MnSymbolE7
+   <8-9>  MnSymbolE8
+   <9-10> MnSymbolE9
+  <10-12> MnSymbolE10
+  <12->   MnSymbolE12
+}{}
+\DeclareFontShape{OMX}{MnSymbolE}{b}{n}{
+    <-6>  MnSymbolE-Bold5
+   <6-7>  MnSymbolE-Bold6
+   <7-8>  MnSymbolE-Bold7
+   <8-9>  MnSymbolE-Bold8
+   <9-10> MnSymbolE-Bold9
+  <10-12> MnSymbolE-Bold10
+  <12->   MnSymbolE-Bold12
+}{}
+
+\let\llangle\@undefined
+\let\rrangle\@undefined
+\DeclareMathDelimiter{\llangle}{\mathopen}%
+                     {MnLargeSymbols}{'164}{MnLargeSymbols}{'164}
+\DeclareMathDelimiter{\rrangle}{\mathclose}%
+                     {MnLargeSymbols}{'171}{MnLargeSymbols}{'171}
+\makeatother
+
+\newcommand{\kforminnerproduct}[2]{\llangle #1, #2 \rrangle}
+
+\DeclarePairedDelimiter\angles{\langle}{\rangle}
+\newcommand{\proj}[2]{\angles*{#2}_{#1}}
+
+
+%\DeclarePairedDelimiter\parentheses{\lparen}{\rparen}
+%\newcommand{\grad}[1]{\operatorname{grad} \parentheses*{#1}}
+
+% Useful Symbols
+\newcommand{\alg}{\mathcal{A}(M)}
+
+
+% Code listing settings
+%\usepackage{listings}
+%\lstset{
+%    language=Python,
+%    basicstyle=\ttfamily\small,
+%    aboveskip={1.0\baselineskip},
+%    belowskip={1.0\baselineskip},
+%    columns=fixed,
+%    extendedchars=true,
+%    breaklines=true,
+%    tabsize=4,
+%    prebreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+%    frame=lines,
+%    showtabs=false,
+%    showspaces=false,
+%    showstringspaces=false,
+%    keywordstyle=\color[rgb]{0.627,0.126,0.941},
+%    commentstyle=\color[rgb]{0.133,0.545,0.133},
+%    stringstyle=\color[rgb]{01,0,0},
+%    numbers=left,
+%    numberstyle=\small,
+%    stepnumber=1,
+%    numbersep=10pt,
+%    captionpos=t,
+%    escapeinside={\%*}{*)}
+%}

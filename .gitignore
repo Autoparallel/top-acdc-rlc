@@ -6,14 +6,5 @@
 *.fls
 *.out
 *.blg
-
-notes/*.aux
-notes/*.bbl
-notes/*.fdb_latexmk
-notes/*.synctex.gz
-notes/*.log
-notes/*.fls
-notes/*.out
-notes/*.blg
-
+*.toc
 .DS_Store

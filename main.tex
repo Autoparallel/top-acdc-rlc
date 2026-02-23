@@ -14,6 +14,7 @@
 We present a cohomological viewpoint on lumped AC/DC RLC circuits, organized around a two-layer separation: topology determines which state spaces and pairings exist, while geometry and constitutive data (via a Hodge/constitutive operator and energy functionals) determine numerical parameters such as $R$, $L$, and $C$.
 At the lumped level, Kirchhoff constraints are expressed using chains/cochains on a graph, with the first cohomology measuring obstructions to globally defined potentials.
 At the field-domain level, Alexander duality and Poincar\'e--Lefschetz duality identify capacitive and inductive degrees of freedom and interpret idealized measurement as evaluation pairings.
+At the compositional level, excision and Mayer--Vietoris control how these state spaces behave under interconnection before any constitutive law is chosen, while Dirichlet-to-Neumann maps and Schur complements recover the familiar effective parameters after constitutive data is added.
 Periodic time ($S^1$) organizes AC steady states via K\"unneth-type decompositions and universal $i\omega$ phase factors.
 \end{abstract}
 
@@ -23,6 +24,32 @@ Periodic time ($S^1$) organizes AC steady states via K\"unneth-type decompositio
 \label{sec:intro}
 Electrical circuits are often taught as an exercise in solving linear equations, but there is a persistent geometric theme: conservation laws look like exactness, potentials exist when cohomology vanishes, and interconnection is a gluing operation.
 The goal of this note is to make that theme concrete for lumped AC/DC RLC circuits, in a way that is intentionally pedagogical rather than encyclopedic.
+
+\subsection{Charge, conservation, and state variables}
+\label{sec:charge-first}
+The most robust physical input into circuit theory is conservation of electric charge: currents are rates of charge transfer and Kirchhoff-type constraints are continuity equations.
+In the field setting this is the continuity equation
+\[
+\partial_t\rho + \nabla\cdot \mathbf{j} = 0.
+\]
+In the lumped graph setting, one can encode the same idea using chains.
+Let $X=(V,E)$ be an oriented graph.
+Think of vertices as equipotential conductor regions (``nodes'') and let $q(t)\in C_0(X;R)$ denote the (net) charge on each vertex, while $i(t)\in C_1(X;R)$ is the branch current $1$-chain.
+Charge conservation can then be written as a discrete continuity equation
+\[
+\dot q + \partial i = s(t),
+\]
+where $s(t)$ is an external current-injection $0$-chain supported on terminals.
+In regimes where internal charge storage is ignored (or in steady state), $\dot q=0$ at internal nodes and the equation reduces to KCL.
+
+Reactive elements introduce explicit storage coordinates: charge $q$ for capacitors and flux linkage $\Phi$ for inductors.
+The universal kinematic relations
+\[
+i=\frac{dq}{dt},\qquad v=\frac{d\Phi}{dt}
+\]
+explain why time derivatives appear in constitutive laws, why Fourier characters on $S^1$ produce $i\omega$ factors in steady state, and why Laplace transforms are natural on $[0,\infty)$.
+Topology then controls which charge/flux degrees of freedom exist robustly (before geometry supplies $C$ and $L$ as bilinear forms).
+% TODO(charge): Tie this charge-first introduction explicitly to Gauss law in the field-domain model and to the Alexander-duality identification of capacitor degrees of freedom.
 
 \subsection{Motivation and a two-layer viewpoint}
 Our guiding separation principle is:
@@ -75,9 +102,20 @@ Then:
 \end{itemize}
 \end{theorem}
 
+\begin{remark}[Charge conservation behind KCL]\label{rem:charge-kcl}
+In time-dependent settings, KCL is a special case of charge conservation (Section~\ref{sec:charge-first}).
+Writing vertex charges as a time-dependent $0$-chain $q(t)\in C_0(X;R)$ and currents as $i(t)\in C_1(X;R)$, the discrete continuity equation is
+\[
+\dot q + \partial i = s(t)
+\]
+with $s(t)$ supported on terminals (external injection).
+When internal charge accumulation is ignored, $\dot q=0$ on internal vertices, so $\partial i=0$ in $C_0(X,T;R)$, which is exactly KCL as stated above.
+% TODO(charge): Make the capacitor case explicit here by expressing $q$ in terms of terminal/node potentials via the capacitance operator and showing $i=dq/dt$.
+\end{remark}
+
 \begin{theorem}[AC adds time-circle degrees of freedom]\label{thm:ac-kunneth}
-Let $Y$ be a space (or pair) modeling spatial degrees of freedom (e.g.\ $(X,T)$ or $(U,\Gamma)$), and let $T$ be either an interval $[0,\infty]$ (DC/transients) or a circle $S^1$ (steady periodic forcing).
-Over a field, the (co)homology of $Y\times T$ decomposes via K\"unneth as a direct sum of tensor products.
+Let $Y$ be a space (or pair) modeling spatial degrees of freedom (e.g.\ $(X,T)$ or $(U,\Gamma)$), and let $\mathcal{T}$ be either the half-line $[0,\infty)$ (or its one-point compactification $[0,\infty]$ for topology) or a circle $S^1$ (steady periodic forcing).
+Over a field, the (co)homology of $Y\times \mathcal{T}$ decomposes via K\"unneth as a direct sum of tensor products.
 In particular, replacing a contractible time axis by a time circle adds a new $H_1(S^1)$ factor, which is the topological shadow of additional AC/phasor degrees of freedom.
 \end{theorem}
 
@@ -100,7 +138,7 @@ After choosing a constitutive Hodge operator $\star_{\mathrm{mat}}$, these pairi
 \begin{theorem}[Gluing, exact sequences, and Schur complements]\label{thm:gluing-schur}
 Suppose a device is built by gluing two subdevices along an interface (at the level of graphs or field domains).
 Then Mayer--Vietoris and related long exact sequences describe how the relevant (co)homology state spaces split or are constrained under gluing.
-If the device is described by a quadratic energy/dissipation functional, eliminating internal interface degrees of freedom produces a Schur complement, yielding an effective terminal operator (a Dirichlet-to-Neumann map) compatible with interconnection.
+After choosing a quadratic energy/dissipation functional on those topologically determined state spaces, eliminating internal interface degrees of freedom produces a Schur complement, yielding an effective terminal operator (a Dirichlet-to-Neumann map) compatible with interconnection.
 \end{theorem}
 
 \section{Background, notation, and conventions}
@@ -112,6 +150,7 @@ For differential forms and the Hodge-star viewpoint used to connect topology to 
 Unless stated otherwise we work over $R=\mathbb{R}$.
 In AC steady state we sometimes extend scalars to $\mathbb{C}$ (phasors).
 We write $\widetilde H_\bullet$ and $\widetilde H^\bullet$ for reduced (co)homology.
+We reserve $T\subset V$ for graph terminals, and use $\mathcal{T}$ for the time manifold factor (typically $S^1$ or $[0,\infty)$; sometimes its one-point compactification $[0,\infty]$ is used for compact-topology arguments).
 
 \subsection{Chains and cochains on a graph}
 Throughout, a lumped circuit is modeled as a finite oriented $1$-dimensional CW complex (a graph)
@@ -120,6 +159,11 @@ X=(V,E).
 \]
 Cellular chain groups are $C_k(X;R)$ with boundary $\partial\colon C_1(X;R)\to C_0(X;R)$, and cochains are $C^k(X;R)=\mathrm{Hom}(C_k(X;R),R)$ with coboundary $d\colon C^0(X;R)\to C^1(X;R)$.
 Evaluation provides the basic pairing $C^1(X;R)\times C_1(X;R)\to R$.
+
+\paragraph{Charge and the discrete continuity equation (optional).}
+If one includes capacitive storage explicitly, it is convenient to introduce a vertex-charge variable $q(t)\in C_0(X;R)$ alongside the branch-current $1$-chain $i(t)\in C_1(X;R)$.
+Charge conservation is then the continuity equation $\dot q+\partial i=s(t)$ with $s(t)$ supported on terminals.
+See Section~\ref{sec:charge-first} for the ``charge-first'' viewpoint.
 
 \subsection{Relative (co)homology and terminals}
 \paragraph{Graph terminals.}
@@ -191,13 +235,56 @@ Numerical parameters require geometric/constitutive data, typically encoded by a
 \langle \alpha,\beta\rangle_{\mathrm{mat}}:=\int_U \alpha\wedge (\star_{\mathrm{mat}}\beta).
 \]
 
-\subsection{\texorpdfstring{Time topology: $[0,\infty]$ versus $S^1$}{Time topology: interval versus circle}}
-We model time dependence by products with a $1$-manifold $T$:
+\subsection{Discrete Hodge theory on cell complexes (optional)}
+\label{sec:discrete-hodge}
+The same Hodge-theoretic package used in the smooth setting has a finite-dimensional analogue on a cell complex.
+This is a clean way to state that ``solving a linear circuit is a harmonic boundary-value problem plus topological zero-modes.''
+
+\paragraph{Cochains, adjoints, and the Hodge Laplacian.}
+Let $K$ be a finite cell complex and consider the cochain complex $(C^\bullet(K;R),d)$.
+Choose inner products $\langle\cdot,\cdot\rangle_k$ on each $C^k(K;R)$ (in circuits these are induced by element parameters and play the role of a discrete constitutive/Hodge operator).
+Let $\delta\colon C^{k}(K;R)\to C^{k-1}(K;R)$ denote the adjoint of $d$ with respect to these inner products.
+The (combinatorial) Hodge Laplacian is
+\[
+\Delta_k := d\,\delta + \delta\,d\qquad\text{on }C^{k}(K;R).
+\]
+It is self-adjoint and positive semidefinite.
+
+\paragraph{Harmonic cochains and cohomology.}
+Define the harmonic $k$-cochains by $\mathcal{H}^k(K):=\ker \Delta_k$.
+In this finite-dimensional setting one has a discrete Hodge theorem: harmonic cochains represent cohomology classes, and (after choosing boundary conditions) there are natural isomorphisms
+\[
+\mathcal{H}^k(K)\;\cong\; H^k(K;R),
+\]
+and similarly for relative cohomology when one imposes terminal/boundary conditions (Dirichlet/Neumann analogues).
+See, e.g., the FEEC viewpoint \cite{arnold_falk_winther_2010_feec}.
+
+\paragraph{Hodge decomposition and a spectral basis.}
+One also has the orthogonal Hodge decomposition
+\[
+C^k(K;R) \;=\; \image(d)\;\oplus\;\mathcal{H}^k(K)\;\oplus\;\image(\delta).
+\]
+Equivalently, every $k$-cochain splits uniquely into \emph{exact} ($d$-part), \emph{harmonic} (topological), and \emph{coexact} ($\delta$-part) components.
+Because $\Delta_k$ preserves $\image(d)$ and $\image(\delta)$ (it commutes with $d$ and $\delta$), one can choose an orthonormal eigenbasis of $\Delta_k$ adapted to this decomposition:
+the $\lambda=0$ eigenvectors are precisely the harmonic cochains, and the $\lambda>0$ eigenvectors span the exact/coexact subspaces (with the chosen boundary conditions).
+
+\paragraph{Circuit interpretation (what corresponds to KCL/KVL).}
+In the lumped setting the relevant complex is often a $1$-complex $X$ (a graph) or a low-dimensional cell complex built from it.
+Under the usual identifications, the operator $\delta$ is a weighted ``divergence'' and $d$ is a discrete ``gradient''.
+Then:
 \begin{itemize}
-  \item \emph{DC/transients:} $T=[0,\infty]$ (contractible, with boundary), and
-  \item \emph{AC steady periodic forcing:} $T=S^1$ (periodic, no boundary).
+  \item \emph{Electrostatic KVL:} a voltage $1$-cochain is exact, $v=d\phi$ (no harmonic circulation component).
+  \item \emph{KCL (internal nodes):} a current is co-closed, $\delta i=0$, i.e.\ divergence-free on internal nodes (with terminals treated by relative/boundary conditions).
 \end{itemize}
-K\"unneth decompositions describe how state spaces change under $Y\mapsto Y\times T$.
+The harmonic part is the topology-controlled remainder: it is the space of zero-modes that survives all local constraints, and its dimension is a Betti number (absolute or relative, depending on terminals).
+
+\subsection{\texorpdfstring{Time topology: $[0,\infty]$ versus $S^1$}{Time topology: interval versus circle}}
+We model time dependence by products with a $1$-manifold $\mathcal{T}$:
+\begin{itemize}
+  \item \emph{DC/transients:} $\mathcal{T}=[0,\infty)$ (or compactified to $[0,\infty]$ when using compact-topology arguments), and
+  \item \emph{AC steady periodic forcing:} $\mathcal{T}=S^1$ (periodic, no boundary).
+\end{itemize}
+K\"unneth decompositions describe how state spaces change under $Y\mapsto Y\times \mathcal{T}$.
 A useful caution is that homology of $S^1$ only sees the constant class and the winding class; the full Fourier spectrum of a periodic signal enters analytically (as eigenfunctions/characters), not through singular homology alone.
 
 \section{The lumped graph model}
@@ -235,6 +322,10 @@ Thus $\partial i=0$ is exactly the statement that currents are $1$-cycles (and $
 For voltages, the coboundary $d\colon C^0(X;R)\to C^1(X;R)$ is the transpose incidence map in a chosen basis.
 If $v=d\phi$, then $v(\gamma)=0$ on every cycle $\gamma$ (telescoping sum).
 Conversely, if $v$ evaluates to $0$ on all cycles, then integrating $v$ along a path from a base vertex defines $\phi$; the cycle condition ensures path independence, so $v=d\phi$.
+
+\paragraph{Discrete Hodge viewpoint (optional).}
+With a choice of inner products on cochains (coming from element parameters), this same picture can be rephrased using the discrete Hodge Laplacian and Hodge decomposition: KVL selects the exact part of a voltage $1$-cochain, KCL is co-closedness (a divergence-free condition) for currents, and the remaining harmonic subspace is canonically isomorphic to cohomology \cite{arnold_falk_winther_2010_feec}.
+See \S\ref{sec:discrete-hodge}.
 
 \subsection{Terminals and ``voltage between terminals'' as a relative pairing}
 Fix terminals $T\subset V$.
@@ -329,6 +420,17 @@ U:=S^3\setminus \mathrm{int}(M),
 \]
 which is a compact $3$-manifold-with-boundary with $\partial U=\partial M$.
 \end{definition}
+
+\paragraph{Charge as data on conductor components.}
+In electrostatics, the total charge on each connected conductor component is a primary state/readout.
+At the ideal level one may package these charges as a vector
+\[
+Q=(Q_1,\dots,Q_m)\in R^m\cong H_0(M;R)^\ast,
+\]
+where $Q_\alpha$ is the net charge on the component corresponding to $\Sigma_\alpha$ (equivalently, on the associated component of $M$).
+Because only charge differences are physically meaningful in an isolated device (global offsets correspond to an overall ``background'' charge), the reduced group $\widetilde H_0(M;R)$ is the natural home for capacitor-type storage coordinates.
+% TODO(charge): Make the Gauss-law link explicit: relate $Q$ to electric flux through separating surfaces in $U$ and to the Alexander-duality identification $\widetilde H_0(M)\cong \widetilde H^2(U)$.
+% TODO(charge): Connect this to the DtN/capacitance-matrix construction: terminal potentials determine induced charges by energy minimization.
 
 \begin{remark}
 The $S^3$-model avoids boundary conditions at spatial infinity; one can instead work in $\mathbb{R}^3$ with decay conditions without changing the purely topological statements below.
@@ -468,6 +570,7 @@ Similarly, dissipation $\int_U \sigma |E|^2\,dV$ produces effective resistive op
 Circuit building is a gluing operation: we form a larger device by joining subdevices along interfaces.
 On the topological side, the bookkeeping tools are excision and Mayer--Vietoris.
 On the analytic side, effective ``black-box'' behavior is encoded by Dirichlet-to-Neumann maps and Schur complements.
+The intended workflow in this section is topology-first: first identify the global state space and compatibility constraints by exact-sequence methods, and only then insert constitutive quadratic functionals to obtain numerical reduction formulas.
 
 \subsection{Excision (local modifications do not change relative groups)}
 \label{sec:excision}
@@ -558,10 +661,21 @@ In favorable decompositions, the relevant part of the Mayer--Vietoris sequence r
 Both patterns are immediate from exactness: if $H_\bullet(A\cap B)$ vanishes in the relevant degrees, then the connecting maps in Mayer--Vietoris force the middle map to be an isomorphism (direct sum).
 If instead the overlap is nontrivial, exactness identifies the global group with the appropriate kernel/quotient enforcing consistency of restrictions on $A\cap B$.
 
+\subsection{A topology-first reduction workflow}
+\label{sec:topology-first-workflow}
+The point of the gluing formalism is not merely to justify a later Schur-complement computation, but to separate \emph{structural} questions from \emph{numerical} ones.
+In practice one can organize reductions in three steps:
+\begin{enumerate}
+  \item \emph{Excision/simplification:} replace complicated geometry away from terminals by a deformation retract or another excisively equivalent model.
+  \item \emph{Exact-sequence bookkeeping:} use Mayer--Vietoris (and pair exact sequences) to determine whether state spaces glue by direct sum, kernel, or quotient and to identify the terminal/interface constraint maps.
+  \item \emph{Constitutive reduction:} choose a Hodge/material inner product or quadratic energy/dissipation functional on the resulting finite-dimensional state spaces and eliminate internal variables (DtN/Schur complement).
+\end{enumerate}
+Steps (1)--(2) are purely topological and determine \emph{which} reduction laws are even meaningful; step (3) supplies the coefficients and frequency scales.
+
 \subsection{Dirichlet-to-Neumann maps and Schur complements}
 \label{sec:dtn}
 \paragraph{Proof idea for \Cref{thm:gluing-schur}.}
-Given a quadratic functional in the bulk (energy or dissipation), fixing terminal data and minimizing in the interior produces an induced quadratic form on the terminal space.
+After the gluing step has identified the relevant interface/terminal variables topologically, a quadratic functional in the bulk (energy or dissipation) produces an induced quadratic form on the terminal space by fixing terminal data and minimizing in the interior.
 This is a Dirichlet-to-Neumann (DtN) construction; gluing corresponds to eliminating interface variables, which is a Schur complement.
 
 \paragraph{Resistive DtN (effective conductance/resistance).}
@@ -833,12 +947,12 @@ see Section~\ref{sec:gluing}, especially \S\ref{sec:mv-series-parallel} and \S\r
 
 \section{Time topology and AC/DC signals}
 \label{sec:time-topology}
-We model time dependence by taking a product with a $1$-manifold $T$:
+We model time dependence by taking a product with a $1$-manifold $\mathcal{T}$:
 \begin{itemize}
-  \item \emph{DC} (transients/step response): $T=[0,\infty]$ (homeomorphic to an interval) with boundary.
-  \item \emph{AC} (steady periodic forcing): $T=S^1$ with $\partial T=\emptyset$.
+  \item \emph{DC} (transients/step response): $\mathcal{T}=[0,\infty)$ (or $[0,\infty]$ after one-point compactification when using compact-topology arguments).
+  \item \emph{AC} (steady periodic forcing): $\mathcal{T}=S^1$ with $\partial \mathcal{T}=\emptyset$.
 \end{itemize}
-The relevant (co)homology of $T$ is elementary:
+For topological bookkeeping we may replace $[0,\infty)$ by its compactification $[0,\infty]\cong [0,1]$, so the relevant (co)homology of the time factor is elementary:
 \[
 H_0([0,\infty];R)\cong R,\qquad H_1([0,\infty];R)=0,
 \]
@@ -846,17 +960,36 @@ and
 \[
 H_0(S^1;R)\cong R,\qquad H_1(S^1;R)\cong R.
 \]
-For any space $Y$ used to model spatial/topological degrees of freedom (e.g.\ the circuit complex $X$ or a field-domain pair $(U,\Gamma)$), the product $Y\times T$ organizes time-dependent degrees of freedom.
+For any space $Y$ used to model spatial/topological degrees of freedom (e.g.\ the circuit complex $X$ or a field-domain pair $(U,\Gamma)$), the product $Y\times \mathcal{T}$ organizes time-dependent degrees of freedom.
+
+\subsection{\texorpdfstring{$Y\times \mathcal{T}$ as a trivial bundle (and what is fixed in the DC case)}{YxTime as a trivial bundle (and what is fixed in the DC case)}}
+\label{sec:bundle-viewpoint}
+It is useful to regard
+\[
+\pi\colon Y\times \mathcal{T}\to \mathcal{T}
+\]
+as the trivial fiber bundle with fiber $Y$.
+In this paper we mostly use this bundle in the simplest possible way: a time-dependent field/current/voltage is a section (or family of classes/forms) over $\mathcal{T}$, while the product topology enables K\"unneth and slant-product operations.
+
+\paragraph{DC viewpoint (contractible base).}
+When $\mathcal{T}$ is contractible (e.g.\ a time interval for DC/transients), the bundle adds no new topological degree of freedom.
+What remains is a family of boundary-value problems on copies of $Y$.
+For a connected resistive graph (or an elliptic field problem with suitable boundary conditions), fixing terminal values and a gauge convention determines a unique harmonic/minimizing representative in each fiber.
+Equivalently: the terminal data selects a unique state modulo the already-quotiented gauge direction.
+
+\paragraph{Why this matters for future sheaf models.}
+This bundle language is a useful staging point for a sheaf-theoretic upgrade: instead of assigning one global linear state space to $Y$, one can assign local solution spaces and gluing conditions over patches (and over time) to accommodate directed/reactive/nonlinear components.
+For the present note, however, the product bundle picture is enough to cleanly separate topology of available modes from constitutive dynamics on those modes.
 
 \subsection{\texorpdfstring{Topology-only constraints for DC vs.\ AC (what changes when time is $S^1$)}{Topology-only constraints for DC vs. AC (time circle)}}
 \label{sec:dc-vs-ac-topology}
 \paragraph{Proof sketch of \Cref{thm:ac-kunneth}.}
 Over a field, the K\"unneth theorem gives a direct-sum decomposition
 \[
-H_k(Y\times T;R)\cong \bigoplus_{i+j=k} H_i(Y;R)\otimes H_j(T;R),
+H_k(Y\times \mathcal{T};R)\cong \bigoplus_{i+j=k} H_i(Y;R)\otimes H_j(\mathcal{T};R),
 \]
 and similarly for cohomology.
-Passing from DC ($T$ contractible) to AC ($T=S^1$) adds an $H_1(S^1)$ factor coming from the time circle.
+Passing from DC ($\mathcal{T}$ contractible) to AC ($\mathcal{T}=S^1$) adds an $H_1(S^1)$ factor coming from the time circle.
 
 Even before choosing a Fourier basis, periodic time enlarges natural state spaces.
 For example, if $H^{k}(Y;R)\neq 0$, then K\"unneth produces additional cohomology in degree $k+1$:
@@ -949,15 +1082,104 @@ The slant product with $[S^1]$ (Section~\ref{sec:background}) is the correspondi
 
 \paragraph{Homology of $S^1$ versus Fourier modes.}
 Singular homology sees only the constant class and the winding class.
-The integer-indexed Fourier modes arise analytically as characters of the circle group (or eigenfunctions of the Laplacian on $S^1$), not as additional homology classes.
+The integer-indexed Fourier modes arise analytically as characters of the circle group (equivalently, one-dimensional irreducible complex representations of $S^1$) or as eigenfunctions of the Laplacian on $S^1$, not as additional homology classes.
 The topological role of $S^1$ is to provide a new degree-$1$ time direction that can be tensored with spatial classes; the analytic role is that differentiation on each Fourier mode inserts an $i\omega$ factor.
+
+\paragraph{Representation-theoretic diagonalization (and its limits).}
+Time translation makes function spaces on $Y\times S^1$ into representations of the circle group.
+If a circuit model is \emph{linear} and \emph{time-translation invariant}, then its response operator commutes with this $S^1$-action, so Fourier/character modes diagonalize the time dependence: each character subspace is invariant, and $\partial_t$ acts there by multiplication by $i\omega$.
+This gives a mode-by-mode block decomposition of the response.
+However, representation theory does \emph{not} by itself imply the physical system is linear; linearity is a constitutive/interconnection assumption.
+What representation theory supplies is the canonical decomposition once linearity and time-translation symmetry are present.
+
+\paragraph{Concrete Fourier/Peter--Weyl form of the decomposition.}
+On a Hilbert space such as $L^2(Y\times S^1;\mathbb{C})$, one has the Fourier decomposition
+\[
+L^2(Y\times S^1;\mathbb{C})
+\cong
+\widehat{\bigoplus}_{n\in\mathbb{Z}}
+L^2(Y;\mathbb{C})\otimes \chi_n,
+\qquad
+\chi_n(t)=e^{int}.
+\]
+If $A$ is a linear operator commuting with time translations (for example, a network operator built from time-independent coefficients and polynomial expressions in $\partial_t$), then
+\[
+A \;\cong\; \widehat{\bigoplus}_{n\in\mathbb{Z}} A_n
+\]
+with each $A_n$ acting only on the spatial factor.
+In particular, if $A=P(\partial_t)$ (or appears in a polynomial matrix pencil in $\partial_t$), then mode-by-mode one substitutes $\partial_t\mapsto in$ (or $i\omega$ after restoring physical units/frequency).
+
+\paragraph{How this fits with K\"unneth.}
+K\"unneth decomposes the \emph{topological} state spaces of $Y\times S^1$ into spatial and temporal factors.
+Fourier/character analysis decomposes the \emph{analytic} time dependence on the $S^1$ factor.
+Together they yield a separation-of-variables picture: topological classes split by degree, and within each such class the linear dynamics splits into independent temporal harmonics.
+
+\paragraph{Harmonic representatives on \texorpdfstring{$Y\times S^1$}{YxS1} (product-metric version).}
+Your ``separation of variables for harmonics'' intuition is essentially right, but the precise statement is a tensor-product \emph{direct sum}, not a Cartesian product, and it is most naturally stated for harmonic \emph{forms}.
+Assume $Y$ is a compact Riemannian manifold (or a compact manifold-with-boundary with fixed boundary conditions) and equip $Y\times S^1$ with a product metric.
+Then the Hodge Laplacian splits on decomposable forms as
+\[
+\Delta_{Y\times S^1}=\Delta_Y\otimes 1 + 1\otimes \Delta_{S^1},
+\]
+and the harmonic forms satisfy the degreewise decomposition
+\[
+\mathcal{H}^k(Y\times S^1)
+\cong
+\big(\mathcal{H}^k(Y)\otimes \mathcal{H}^0(S^1)\big)
+\oplus
+\big(\mathcal{H}^{k-1}(Y)\otimes \mathcal{H}^1(S^1)\big),
+\]
+which is the Hodge-level realization of K\"unneth.
+This is the precise version of the heuristic ``harmonics on space--time separate into spatial and temporal pieces.''
+
+\paragraph{Important caution for scalar potentials.}
+If one restricts to harmonic \emph{functions} (degree $0$), then on connected compact $S^1$ the only harmonic time factor is the constant mode.
+So nonconstant Fourier modes on the circle are \emph{Laplacian eigenfunctions} (characters), not harmonic functions.
+In circuit language, one usually solves a spatial harmonic/minimizing problem on each time slice (DC picture) or, after Fourier decomposition, solves a family of spatial boundary-value problems mode-by-mode (AC picture), rather than a single harmonic function on the full product $Y\times S^1$.
+
+\paragraph{Lumped-circuit formulation of the same idea.}
+For a linear lumped network on a graph $Y=X$ with terminals fixed, a time-dependent node potential can be expanded as
+\[
+\phi(t)=\sum_{n\in\mathbb{Z}} \phi_n e^{int}
+\]
+in the periodic case.
+Each coefficient $\phi_n$ lives in the spatial node-potential space (modulo gauge), and the network equations decouple by Fourier mode because the response operator commutes with time translation.
+The zero mode is the DC component; the nonzero modes are the AC harmonics.
+For instance, an equation of the form
+\[
+\big(A_0 + A_1\partial_t + A_2\partial_t^2\big)\phi = b
+\]
+reduces mode-by-mode to
+\[
+\big(A_0 + in\,A_1 - n^2 A_2\big)\phi_n = b_n,
+\]
+which is the algebraic origin of impedance/admittance formulas and resonance conditions.
+This is the graph-level version of the separation-of-variables picture.
+
+\paragraph{The interval case \texorpdfstring{$[0,\infty)$}{[0,infty)} is different.}
+For DC/transients, the relevant symmetry is usually the translation semigroup on $[0,\infty)$ rather than the compact group $S^1$.
+There is no discrete character basis analogous to Fourier modes on the circle.
+Instead one typically uses Laplace transforms (for causal initial-value problems) or semigroup/spectral methods; depending on boundary conditions one may also use sine/cosine transforms on the half-line.
+This is the noncompact/causal analogue of ``diagonalizing time'' and is closely related to the Laplace-transform viewpoint engineers already use.
+Topologically this matches the fact that $H_1([0,\infty);R)=0$: there is no new periodic time-cycle class to tensor with spatial classes.
 
 \subsection{\texorpdfstring{Leading/lagging and phase as ``$90^\circ$ rotation'' on the time circle}{Leading/lagging and phase as ``90-degree rotation'' on the time circle}}
 \label{sec:leading-lagging}
 The most visible dynamical signature of energy storage is phase shift: in sinusoidal steady state, ideal capacitors make current lead voltage, while ideal inductors make current lag voltage.
 
+\paragraph{Bundle viewpoint: time derivatives as vertical derivatives.}
+On the product $Y\times S^1$ there are two equally natural projections.
+Earlier we emphasized $\pi_{\mathrm{time}}\colon Y\times S^1\to S^1$ (a family of spatial states parametrized by time).
+For phase behavior it is often cleaner to use the other projection
+\[
+\pi_{\mathrm{space}}\colon Y\times S^1\to Y,
+\]
+viewing the time circle as a (trivial) $S^1$-fiber over each point of $Y$.
+Then $\frac{d}{dt}$ is literally differentiation along the $S^1$-fiber direction: it is the infinitesimal generator of the circle action on the time factor.
+In a Fourier/character basis, this ``vertical derivative'' becomes multiplication by $i\omega$ (generator of Lie algebra for $\mathfrak{u}(1)$), which is the universal source of quadrature phase shifts.
+
 \paragraph{Time derivatives and $S^1$-modes.}
-Working on $T=S^1$ with coordinate $t$, the operator $\frac{d}{dt}$ acts on Fourier modes $e^{int}$ by multiplication by $in$.
+Working on $\mathcal{T}=S^1$ with coordinate $t$, the operator $\frac{d}{dt}$ acts on Fourier modes $e^{int}$ (exponential map from Lie algebra) by multiplication by $in$.
 Thus, mode-by-mode, differentiation corresponds to a $90^\circ$ phase shift.
 
 \paragraph{Ideal capacitor and inductor (mode-by-mode).}
@@ -1031,6 +1253,196 @@ This formula is a concrete instance of a cohomological pairing computing an inte
 \paragraph{Mutual inductance as a geometrically weighted pairing.}
 In magnetostatics, the flux through a loop induced by current in another loop can be viewed as a symmetric bilinear form on the relevant ``loop'' state space (typically $H_1(U;R)$ or a relative variant), obtained by composing a topological pairing (linking/intersection, controlled by the complement topology) with a constitutive operator determined by $\mu$ (and the metric).
 Topology controls \emph{which} couplings can exist robustly, while geometry/materials determine their numerical values.
+
+\subsection{Hybrid example: a parallel cavity--loop reactive branch}
+\label{sec:hybrid-parallel-lc}
+This example combines the two basic topological storage mechanisms in one two-terminal device.
+Take a parallel connection of
+\begin{itemize}
+  \item an ``ideal capacitor'' branch modeled topologically by a spherical cavity (inner/outer conductor surfaces, with terminal contacts on the two boundary components), and
+  \item an ``ideal inductor'' branch modeled topologically by a loop/link configuration detecting a nontrivial $H_1$ class in the field-domain complement.
+\end{itemize}
+The right panel of \Cref{fig:parallel-cavity-loop} is intentionally schematic/immersed rather than a faithful embedding in $\mathbb{R}^3$; the point is to display terminal attachments and the relevant topological classes in one picture.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\textwidth}
+\centering
+\begin{tikzpicture}[
+  scale=0.95,
+  every node/.style={font=\small},
+  line cap=round,
+  line join=round,
+  >=Stealth
+]
+  \tikzset{
+    tnode/.style={circle,draw,inner sep=2.6pt,line width=0.85pt,fill=white},
+    wire/.style={line width=1.1pt},
+    lab/.style={fill=white,fill opacity=0.85,text opacity=1,rounded corners=2pt,inner sep=1.4pt}
+  }
+
+  \node[tnode] (a) at (-3.2,0) {$a$};
+  \node[tnode] (b) at ( 3.2,0) {$b$};
+
+  % rails
+  \draw[wire] (a) -- (-2.25,0);
+  \draw[wire] (b) -- ( 2.25,0);
+  \draw[wire] (-2.25,0) -- (-2.25,1.55);
+  \draw[wire] ( 2.25,0) -- ( 2.25,1.55);
+  \draw[wire] (-2.25,0) -- (-2.25,-1.55);
+  \draw[wire] ( 2.25,0) -- ( 2.25,-1.55);
+
+  % capacitor branch (top)
+  \draw[wire] (-2.25,1.55) -- (-0.75,1.55);
+  \draw[wire] ( 0.75,1.55) -- ( 2.25,1.55);
+  \draw[line width=1.2pt] (-0.28,1.10) -- (-0.28,2.00);
+  \draw[line width=1.2pt] ( 0.28,1.10) -- ( 0.28,2.00);
+  \node[lab,text=blue!60!black] at (0,2.45) {ideal $C$};
+  \node[lab,align=center] at (0,0.95) {\scriptsize spherical cavity\\[-1pt]\scriptsize (topological model)};
+
+  % inductor branch (bottom)
+  \draw[wire] (-2.25,-1.55) -- (-1.40,-1.55);
+  \draw[wire] ( 1.40,-1.55) -- ( 2.25,-1.55);
+  \draw[line width=1.1pt] (-1.40,-1.55) arc (180:0:0.35 and 0.30);
+  \draw[line width=1.1pt] (-0.70,-1.55) arc (180:0:0.35 and 0.30);
+  \draw[line width=1.1pt] ( 0.00,-1.55) arc (180:0:0.35 and 0.30);
+  \draw[line width=1.1pt] ( 0.70,-1.55) arc (180:0:0.35 and 0.30);
+  \node[lab,text=green!55!black] at (0,-0.65) {ideal $L$};
+  \node[lab,align=center] at (0,-2.35) {\scriptsize circle/link\\[-1pt]\scriptsize (topological model)};
+
+  \node[lab,fill=gray!8] at (0,0) {parallel connection};
+\end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+\centering
+\begin{tikzpicture}[
+  scale=0.95,
+  every node/.style={font=\small},
+  line cap=round,
+  line join=round,
+  >=Stealth
+]
+  \tikzset{
+    tnode/.style={circle,draw,inner sep=2.6pt,line width=0.85pt,fill=white},
+    wire/.style={line width=1.05pt},
+    lab/.style={fill=white,fill opacity=0.85,text opacity=1,rounded corners=2pt,inner sep=1.4pt}
+  }
+
+  \node[tnode] (a2) at (-3.2,0) {$a$};
+  \node[tnode] (b2) at ( 3.2,0) {$b$};
+  \draw[wire] (a2) -- (-2.45,0);
+  \draw[wire] (b2) -- ( 2.45,0);
+  \draw[wire] (-2.45,0) -- (-2.45,1.55);
+  \draw[wire] ( 2.45,0) -- ( 2.45,1.55);
+  \draw[wire] (-2.45,0) -- (-2.45,-1.60);
+  \draw[wire] ( 2.45,0) -- ( 2.45,-1.60);
+
+  % Top branch: cavity capacitor cartoon (immersed schematic)
+  \coordinate (Cc) at (0,1.40);
+  \shade[inner color=gray!10,outer color=gray!24,opacity=0.9] (Cc) circle (0.95);
+  \shade[inner color=white,outer color=white] (Cc) circle (0.43);
+  \draw[line width=0.95pt] (Cc) circle (0.95);
+  \draw[line width=0.95pt] (Cc) circle (0.43);
+  \draw[wire] (-2.45,1.55) -- (-0.95,1.55) -- ($(Cc)+(-0.95,0)$);
+  \draw[wire] ( 2.45,1.55) -- ( 0.25,1.55) -- ($(Cc)+(0.43,0)$);
+  \draw[line width=1.5pt,red!75!black] ($(Cc)+(-155:0.95)$) arc (-155:-25:0.95);
+  \draw[line width=1.5pt,red!75!black] ($(Cc)+(25:0.43)$) arc (25:155:0.43);
+  \draw[line width=0.9pt,green!55!black,dashed] ($(Cc)+(0,0.90)$) -- ($(Cc)+(0,-0.90)$);
+  \node[lab,text=red!75!black] at (-1.35,2.45) {$\Gamma_a$};
+  \node[lab,text=red!75!black] at (1.55,2.45) {$\Gamma_b$};
+  \node[lab,text=green!55!black] at (1.35,1.05) {$\Sigma_C$};
+
+  % Bottom branch: loop/link inductor cartoon
+  \coordinate (Lc) at (0,-1.45);
+  \draw[wire] (-2.45,-1.60) -- (-1.15,-1.60);
+  \draw[wire] ( 2.45,-1.60) -- ( 1.15,-1.60);
+  % conductor loop with a small top gap where leads attach
+  \draw[line width=1.15pt,gray!70!black] ($(Lc)+(150:0.95)$) arc (150:20:0.95 and 0.58);
+  \draw[line width=1.15pt,gray!70!black] ($(Lc)+(-20:0.95)$) arc (-20:-210:0.95 and 0.58);
+  \draw[wire] (-1.15,-1.60) -- ($(Lc)+(150:0.95)$);
+  \draw[wire] ( 1.15,-1.60) -- ($(Lc)+(30:0.95)$);
+  % linked cycle / flux probe
+  \draw[line width=1.1pt,blue!65!black] ($(Lc)+(0,1.08)$) arc (90:-90:0.36 and 1.08);
+  \draw[line width=1.1pt,blue!65!black,dashed] ($(Lc)+(0,-1.08)$) arc (-90:90:0.36 and 1.08);
+  \node[lab,text=gray!70!black] at (0,-0.35) {loop branch};
+  \node[lab,text=blue!65!black] at (1.15,-1.45) {$\gamma_L$};
+
+  \node[lab,align=center,fill=gray!8] at (0,0.05)
+    {\scriptsize schematic immersed topological realization\\[-1pt]\scriptsize (terminal wires shown explicitly)};
+\end{tikzpicture}
+\end{minipage}
+\caption{A two-terminal parallel LC example combining the two topological storage mechanisms. Left: the circuit interconnection pattern. Right: a schematic/immersed topological realization with a spherical-cavity capacitor branch (top) and a loop/link inductor branch (bottom), both attached to the same terminals.}
+\label{fig:parallel-cavity-loop}
+\end{figure}
+
+\paragraph{Topology-first analysis of the parallel interconnection.}
+Let $U_C$ and $U_L$ denote the field domains for the cavity and loop branches, with terminal subsets glued to the same two terminal components.
+Excision removes irrelevant wire geometry away from those terminals, and the gluing occurs only at the terminal interface.
+Accordingly, the reactive state space is (schematically) a direct sum of the branch state spaces:
+\[
+\mathcal{S}_{\mathrm{react}}
+\;\cong\;
+\Span\{[\Sigma_C]\}\oplus \Span\{[\gamma_L]\},
+\]
+where $[\Sigma_C]$ denotes the capacitor-type separating class (degree-$2$/relative in the field picture) and $[\gamma_L]$ denotes the inductor-type loop/link class (degree-$1$ in the complement picture).
+This is exactly the ``direct sum'' branch of the Mayer--Vietoris dichotomy from \S\ref{sec:mv-series-parallel}; the terminal matching condition is simply that both branches see the same terminal voltage.
+
+\paragraph{Explicit Mayer--Vietoris chase for this parallel LC gluing.}
+Let $A$ denote the cavity branch together with a small terminal collar, let $B$ denote the loop branch together with the same collar, and let $I:=A\cap B$ be the overlap (the terminal collar itself).
+Topologically, $I$ deformation retracts onto two terminal patches (or, in a lumped caricature, two vertices), so
+\[
+H^k(I;R)=0\quad (k\ge 1),\qquad H^0(I;R)\cong R^2.
+\]
+For the reactive degrees (degree $1$ for the inductor-type class and degree $2$ for the capacitor-type class), the Mayer--Vietoris cohomology sequence has segments
+\[
+H^{m-1}(I;R)\longrightarrow H^m(A\cup B;R)\xrightarrow{j^\ast}
+H^m(A;R)\oplus H^m(B;R)\xrightarrow{\rho_A-\rho_B} H^m(I;R),
+\]
+with $m=1,2$.
+For $m=2$, since $H^1(I;R)=H^2(I;R)=0$, exactness gives
+\[
+H^2(A\cup B;R)\xrightarrow{\;\cong\;} H^2(A;R)\oplus H^2(B;R),
+\]
+so the capacitor-type degree-$2$ class glues by direct sum.
+For $m=1$, one still gets surjectivity
+\[
+H^1(A\cup B;R)\twoheadrightarrow H^1(A;R)\oplus H^1(B;R),
+\]
+but the kernel can contain the image of the connecting map $\delta\colon H^0(I;R)\to H^1(A\cup B;R)$; this is exactly the extra ``parallel-loop'' contribution created by gluing along two terminal components.
+In the terminal-relative formulation (or after imposing the terminal matching/gauge conditions relevant to the chosen readout), this degree-$0$ contribution is quotiented out, leaving the branch loop class as the intended inductor coordinate.
+
+Concretely, the chase is as follows.
+For $m=2$, given branch classes $(\alpha_A,\alpha_B)$, their restrictions to $I$ vanish, so $(\rho_A-\rho_B)(\alpha_A,\alpha_B)=0$ and exactness gives a \emph{unique} global class $\alpha\in H^2(A\cup B;R)$ with $j^\ast(\alpha)=(\alpha_A,\alpha_B)$.
+For $m=1$, the same argument gives existence of a global preimage, but uniqueness is only up to the image of $\delta(H^0(I;R))$ unless one passes to the relative/gauge-fixed version.
+This is the topological reason the cavity and loop storage coordinates coexist in the parallel device, while also explaining why terminal matching/gauge bookkeeping cannot be ignored in degree $1$.
+
+\paragraph{Where terminal matching appears in the same sequence.}
+For degree $0$ (potentials before quotienting by gauge), the same Mayer--Vietoris sequence reads
+\[
+0\longrightarrow H^0(A\cup B;R)\xrightarrow{j^\ast} H^0(A;R)\oplus H^0(B;R)
+\xrightarrow{\rho_A-\rho_B} H^0(I;R)\longrightarrow H^1(A\cup B;R)\longrightarrow \cdots.
+\]
+Here the map $\rho_A-\rho_B$ is exactly ``difference of terminal restrictions.''
+Thus the familiar parallel-circuit condition ``the branches have the same terminal voltage'' is literally the kernel condition in degree $0$.
+The degree-$2$ capacitor class glues by direct sum, while the degree-$1$ loop class is controlled by the same sequence together with the connecting map/gauge quotient.
+
+\paragraph{Mode-by-mode AC response (after constitutive data is chosen).}
+Once geometry/material data assigns numerical parameters $C$ and $L$, the phasor-domain branch laws at angular frequency $\omega>0$ are
+\[
+I_C=(i\omega C)V,\qquad I_L=\frac{1}{i\omega L}\,V.
+\]
+Parallel gluing adds currents, so the effective admittance is
+\[
+Y_{\mathrm{eff}}(\omega)=\frac{I_C+I_L}{V}
+= i\omega C+\frac{1}{i\omega L}.
+\]
+In particular, the ideal lossless parallel LC branch has an antiresonance at $\omega_0=1/\sqrt{LC}$ where the susceptances cancel.
+The topological input is the existence of one capacitor-type and one inductor-type storage coordinate; the constitutive/Hodge input supplies the numerical values $C,L$ and hence the resonance scale.
+
+\paragraph{How this example interfaces with the \texorpdfstring{$Y\times S^1$}{YxS1} picture.}
+On $Y\times S^1$, K\"unneth records the extra time-circle factor and Fourier/character decomposition diagonalizes the time dependence.
+The same parallel-direct-sum topology persists in each harmonic sector, while $\partial_t$ contributes the mode factor $i\omega$ that distinguishes the capacitor and inductor responses.
 
 \subsection{Worked lumped-circuit examples}
 \label{sec:lumped-examples}

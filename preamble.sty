@@ -6,7 +6,6 @@
 \usepackage{xfrac}
 \usepackage{soul}
 \usepackage[english]{babel}
-\usepackage[colorlinks,linkcolor=blue,urlcolor=blue,citecolor=blue]{hyperref}
 %\renewcommand\familydefault{\sfdefault}
 %\usepackage{tgheros}
 \usepackage{tabularx}
@@ -16,7 +15,6 @@
 
 \usepackage{multicol}
 \usepackage{mathtools}
-\usepackage{cleveref}
 \usepackage{authblk}
 \usepackage{xargs} 
 \usepackage{enumerate}
@@ -33,6 +31,10 @@ decorations.pathreplacing}
 \geometry{left=20mm,right=30mm,%
 bindingoffset=0mm, top=20mm,bottom=20mm} %previously set to 20mm all around
 \linespread{1.3}
+
+% Hyperlinks (load late; cleveref after hyperref)
+\usepackage[colorlinks,linkcolor=blue,urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage{cleveref}
 
 
 % Langle
@@ -106,7 +108,7 @@ bindingoffset=0mm, top=20mm,bottom=20mm} %previously set to 20mm all around
 
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
-\newtheorem{example}[section]{Example}
+\newtheorem{example}{Example}[section]
 \newtheorem{remark}[theorem]{Remark}
 
 \newcommand{\vecgrad}{\boldsymbol{\vec{\nabla}}}
@@ -135,6 +137,10 @@ bindingoffset=0mm, top=20mm,bottom=20mm} %previously set to 20mm all around
 \newcommand{\exterior}[1]{\bigwedge\nolimits^#1}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
+\providecommand{\Bbbk}{}
+\renewcommand{\Bbbk}{\mathbb{K}}
+\providecommand{\iu}{\mathrm{i}}
+\providecommand{\mat}[1]{\mathbf{#1}}
 \newcommand{\quat}{\mathbb{H}}
 \newcommand{\image}{\mathrm{im}}
 \newcommand{\bigslant}[2]{{\raisebox{.2em}{$#1$}\left/\raisebox{-.2em}{$#2$}\right.}}
